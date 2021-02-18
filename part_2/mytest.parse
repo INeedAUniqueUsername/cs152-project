@@ -1,0 +1,143 @@
+identifier -> IDENT(main)
+declaration-block-optional -> epsilon
+identifier -> IDENT(n)
+identifier-block -> identifier
+declaration-type -> INTEGER
+declaration -> identifier-block COLON declaration-type
+identifier -> IDENT(i)
+identifier -> IDENT(j)
+identifier -> IDENT(k)
+identifier-block -> identifier
+identifier-block -> identifier COMMA identifier-block
+identifier-block -> identifier COMMA identifier-block
+declaration-type -> INTEGER
+declaration -> identifier-block COLON declaration-type
+identifier -> IDENT(t)
+identifier-block -> identifier
+declaration-type -> ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER
+declaration -> identifier-block COLON declaration-type
+declaration-block -> declaration SEMICOLON
+declaration-block -> declaration SEMICOLON declaration-block
+declaration-block -> declaration SEMICOLON declaration-block
+declaration-block-optional -> declaration-block
+identifier -> IDENT(i)
+var -> identifier
+identifier -> IDENT(j)
+var -> identifier
+var-block -> var
+var-block -> var COMMA var-block
+statement -> READ var-block
+identifier -> IDENT(k)
+var -> identifier
+term-body -> NUMBER
+term -> term-body
+multiplicative-expr -> term
+expression -> multiplicative-expr
+statement -> var ASSIGN expression
+identifier -> IDENT(n)
+var -> identifier
+term-body -> NUMBER
+term -> term-body
+multiplicative-expr -> term
+expression -> multiplicative-expr
+statement -> var ASSIGN expression
+identifier -> IDENT(t)
+identifier -> IDENT(k)
+var -> identifier
+term-body -> var
+term -> term-body
+multiplicative-expr -> term
+expression -> multiplicative-expr
+var -> identifier L_SQUARE_BRACKET expression R_SQUARE_BRACKET
+identifier -> IDENT(k)
+var -> identifier
+term-body -> var
+term -> term-body
+multiplicative-expr -> term
+expression -> multiplicative-expr
+statement -> var ASSIGN expression
+identifier -> IDENT(k)
+var -> identifier
+identifier -> IDENT(k)
+var -> identifier
+term-body -> var
+term -> term-body
+multiplicative-expr -> term
+term-body -> NUMBER
+term -> term-body
+multiplicative-expr -> term
+expression -> multiplicative-expr
+expression -> multiplicative-expr ADD expression
+statement -> var ASSIGN expression
+identifier -> IDENT(k)
+var -> identifier
+term-body -> var
+term -> term-body
+term-body -> NUMBER
+term -> term-body
+multiplicative-expr -> term
+multiplicative-expr -> term MOD multiplicative-expr
+expression -> multiplicative-expr
+comp -> EQ
+term-body -> NUMBER
+term -> term-body
+multiplicative-expr -> term
+expression -> multiplicative-expr
+relation-expr-body -> expression comp expression
+relation-expr -> relation-expr-body
+relation-and-expr -> relation-expr
+bool-expr -> relation-and-expr
+identifier -> IDENT(t)
+identifier -> IDENT(k)
+var -> identifier
+term-body -> var
+term -> term-body
+multiplicative-expr -> term
+term-body -> NUMBER
+term -> term-body
+multiplicative-expr -> term
+expression -> multiplicative-expr
+expression -> multiplicative-expr SUB expression
+var -> identifier L_SQUARE_BRACKET expression R_SQUARE_BRACKET
+var-block -> var
+statement -> WRITE var-block
+statement-block -> statement SEMICOLON
+statement -> IF bool-expr THEN statement-then ENDIF
+identifier -> IDENT(k)
+var -> identifier
+term-body -> var
+term -> term-body
+multiplicative-expr -> term
+expression -> multiplicative-expr
+comp -> GTE
+identifier -> IDENT(n)
+var -> identifier
+term-body -> var
+term -> term-body
+multiplicative-expr -> term
+expression -> multiplicative-expr
+relation-expr-body -> expression comp expression
+relation-expr -> relation-expr-body
+relation-and-expr -> relation-expr
+bool-expr -> relation-and-expr
+statement -> BREAK
+statement-block -> statement SEMICOLON
+statement -> IF bool-expr THEN statement-then ENDIF
+statement-block -> statement SEMICOLON
+statement-block -> statement SEMICOLON statement-block
+statement-block -> statement SEMICOLON statement-block
+statement-block -> statement SEMICOLON statement-block
+
+relation-expr-body -> TRUE
+relation-expr -> relation-expr-body
+relation-and-expr -> relation-expr
+bool-expr -> relation-and-expr
+statement -> DO BEGINLOOP statement-block ENDLOOP WHILE bool-expr
+statement-block -> statement SEMICOLON
+statement-block -> statement SEMICOLON statement-block
+statement-block -> statement SEMICOLON statement-block
+statement-block -> statement SEMICOLON statement-block
+statement-block-optional -> statement-block
+function -> FUNCTION identifier SEMICOLON BEGIN_PARAMS declaration-block-optional END_PARAMS BEGIN_LOCALS declaration-block-optional END_LOCALS BEGIN_BODY statement-block-optional END_BODY
+function-block -> function function-block
+program -> function-block
