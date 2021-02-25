@@ -1,10 +1,50 @@
 %{
- #include <stdio.h>
- #include <stdlib.h>
- void yyerror(const char *msg);
- extern int currLine;
- extern int currPos;
- FILE * yyin;
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include <map>
+	void yyerror(const char *msg);
+	extern int currLine;
+	extern int currPos;
+	FILE * yyin;
+	
+	map<string, pair<string, unsigned>> symbols;
+	
+	struct Statement {
+		std::string IR;
+	}
+	struct Expression {
+		std::string IR;
+		std::string ret_name;
+	}
+	
+	struct Var {
+		std::string identifier;
+		unsigned index;
+	}
+	struct VarBlock {
+		std::vector<std::pair<std::string, unsigned>> variables;
+	}
+	
+	struct Identifier {
+		std::string identifier;
+	}
+	struct IdentifierBlock {
+		vector<std::string> identifiers;
+	}
+	struct DeclarationBlock {
+		std::string IR;
+		std::vector<std::tuple<std::string, std::string, unsigned>> variables;
+	}
+	struct Declaration {
+		std::string IR;
+		std::vector<std::string> identifiers;
+		std::string type;
+		unsigned size;
+	}
+	struct DeclarationType {
+		std::string type;
+		unsigned size;
+	}
 %}
 
 %union{
@@ -28,6 +68,18 @@
 %left MULT DIV
 %nonassoc UMINUS
 
+%type<Statement> statement-block-optional
+%type<Statement> statement-block
+%type<Statement> statement
+%type<Expression> bool-expr
+%type<Expression> multiplicative-expr
+%type<Expression> term
+
+%type<Declaration> declaration
+%type<DeclarationType> declaration-type
+%type<IdentifierBlock> identifier-block
+%type<Identifier> identifier
+
 %% 
 program:
 		function-block				{ printf("program -> function-block\n"); }
@@ -45,63 +97,231 @@ function:
 		END_LOCALS
 		BEGIN_BODY
 		statement-block-optional
-		END_BODY
-						{ printf("function -> FUNCTION identifier SEMICOLON BEGIN_PARAMS declaration-block-optional END_PARAMS BEGIN_LOCALS declaration-block-optional END_LOCALS BEGIN_BODY statement-block-optional END_BODY\n"); }
+		END_BODY {
+		
+			stringstream s;
+			s << $1 << std::endl;
+			
+			
+			
+			//Free the symbols and temps
+			
+			s << "endfunc" << std::endl;
+		}
 		;
 declaration-block-optional:
-						{ printf("declaration-block-optional -> epsilon\n"); }
-	  | declaration-block
-						{ printf("declaration-block-optional -> declaration-block\n"); }
+						{}
+	  | declaration-block {
+			$$.IR = $0.IR;
+			$$.variables = $0.IR;
+		}
 		;
 declaration-block:
-	    declaration SEMICOLON
-			{ printf("declaration-block -> declaration SEMICOLON\n"); }
-	  | declaration SEMICOLON declaration-block
-			{ printf("declaration-block -> declaration SEMICOLON declaration-block\n"); }
+	    declaration SEMICOLON {
+			$$.IR = $0.IR;
+			for(unsigned i = 0; i < $0.identifiers.size(); i++) {
+				$$.variables.push_back(make_tuple($0.identifiers[i], $0.type, $0.size));
+			}
+		}
+	  | declaration SEMICOLON declaration-block {
+			stringstream s;
+			s << $0.IR;
+			s << $1.IR;
+			$$.IR = s.str();
+			
+			$$.variables = $1.variables;
+			
+			for(unsigned i = 0; i < $0.identifiers.size(); i++) {
+				$$.variables.push_back(make_tuple($0.identifiers[i], $0.type, $0.size));
+			}
+		}
 		;
-statement-block-optional:
-					{ printf("statement-block-optional -> epsilon\n"); }
-	  | statement-block
-					{ printf("statement-block-optional -> statement-block\n"); }
+statement-block-optional: {}
+	  | statement-block {
+			$$.IR = $0.IR;
+		}
 		;
 statement-block:
-	    statement SEMICOLON
-					{ printf("statement-block -> statement SEMICOLON\n"); }
-	  | statement SEMICOLON statement-block
-					{ printf("statement-block -> statement SEMICOLON statement-block\n"); }
+	    statement SEMICOLON {
+			$$.IR = $0.IR;
+		}
+	  | statement SEMICOLON statement-block {
+			stringstream s;
+			s << $0.IR;
+			s << $2.IR;
+			$$.IR = s.str();
+		}
 		;
 declaration:
-		identifier-block COLON declaration-type
-					{ printf("declaration -> identifier-block COLON declaration-type\n"); }
+		identifier-block COLON declaration-type {
+		
+				$$.identifiers = $0.identifiers;
+				$$.type = $2.type;
+				$$.size = $2.size;
+				
+				stringstream s;
+				if($$.size > 0) {
+					for(unsigned i = 0; i < $$.identifiers.size(); i++) {
+						string identifier = $$.identifiers[i];
+						
+						//Check if already in symbol table
+						
+						//Make a temp
+						string temp = make_temp();
+						s << ". " << temp << std::endl;
+						
+						//Add to symbol table
+						
+						//Make sure to free the symbol table entry and temp
+					}
+				} else {
+					for(unsigned i = 0; i < $$.identifiers.size(); i++) {
+						string identifier = $$.identifiers[i];
+						
+						//Check if already in symbol table
+						
+						//Make a temp
+						string temp = make_temp();
+						s << ".[] " << temp << ", " << $2.size << std::endl;
+						
+						//Add to symbol table
+						
+						//Make sure to free the symbol table entry and temp
+					}
+				}
+				$$.IR = s.str();
+		}
 		;
 declaration-type:
-		INTEGER		{ printf("declaration-type -> INTEGER\n"); }
-	  | ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER
-					{ printf("declaration-type -> ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER\n"); }
+		INTEGER	{
+				$$.type = $0;
+				$$.size = 0;
+		}
+	  | ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {
+				$$.type = "integer";
+				$$.size = atoi($2);
+		}
 		;
 identifier-block:
-		identifier		{ printf("identifier-block -> identifier\n"); }
-      | identifier COMMA identifier-block
-					{ printf("identifier-block -> identifier COMMA identifier-block\n"); }
+		identifier		{
+			$$.identifiers.push_back($0);
+		}
+      | identifier COMMA identifier-block {
+			$$.identifiers = $1.identifiers;
+			$$.identifiers.push_back($0);
+		}
 		;
 identifier:
-		IDENT		{ printf("identifier -> IDENT(%s)\n", $1); }
+		IDENT		{
+			$$.identifier = $0;
+		}
 		;
 statement:
-		var ASSIGN expression
-			{ printf("statement -> var ASSIGN expression\n"); }
-	  | IF bool-expr THEN statement-block ENDIF
-			{ printf("statement -> IF bool-expr THEN statement-then ENDIF\n"); }
-	  | IF bool-expr THEN statement-block ELSE statement-block ENDIF
-			{ printf("statement -> IF bool-expr THEN statement-block ELSE statement-block ENDIF\n"); }
+		var ASSIGN expression {
+			stringstream s;
+			
+			//Lookup from symbol table
+			string temp = lookup($0.identifier);
+			
+			unsigned index = $0.index;
+			if(index != -1) {
+				s << "=[] " << temp << ", " << $2.ret_name << ", " << index << std::endl;
+			} else {
+				s << "= " << temp << ", " << $2.ret_name << std::endl;
+			}
+			$$.IR = s.str();
+		}
+	  | IF bool-expr THEN statement-block ENDIF {
+	  
+			//TO DO: Make sure $ entries are properly indexed
+			//Remove $0
+	  
+			string label0 = make_label();
+			string label1 = make_label();
+			string label2 = make_label();
+			stringstream s;
+			
+			//Condition
+			s << $2.IR;
+			//Jump into branch
+			s << "?:=" << label0 << ", " << $2.ret_name << std::endl;
+			
+			//Jump into else
+			s << ":= " << label1 << std::endl;
+			
+			//Branch
+			s << ":" << label0 << std::endl;
+			s << $4.IR;
+			//Jump to finally
+			s << ":= " << label2 << std::endl;
+			
+			//Else
+			s << ": " << label1 << std::endl;
+			
+			//Finally
+			s << ": " << label2 << std::endl;
+			s << $6.IR;
+			
+			$$.IR = s.str();
+		}
+	  | IF bool-expr THEN statement-block ELSE statement-block ENDIF {
+			string label0 = make_label();
+			string label1 = make_label();
+			stringstream s;
+			
+			//Condition
+			s << $2.IR;
+			//Jump into branch
+			s << "?:=" << label0 << ", " << $2.ret_name << std::endl;
+			
+			//Skip branch
+			s << ":= " << label1 << std::endl;
+			
+			//Branch
+			s << ":" << label0 << std::endl;
+			s << $4.IR;
+			
+			//Finally
+			s << ": " << label1 << std::endl;
+			$$.IR = s.str();
+			
+		}
 	  | WHILE bool-expr BEGINLOOP statement-block ENDLOOP
 			{ printf("statement -> WHILE bool-expr BEGINLOOP statement-block ENDLOOP\n"); }
 	  | DO BEGINLOOP statement-block ENDLOOP WHILE bool-expr
 			{ printf("statement -> DO BEGINLOOP statement-block ENDLOOP WHILE bool-expr\n"); }
-	  | READ var-block		{ printf("statement -> READ var-block\n"); }
-	  | WRITE var-block		{ printf("statement -> WRITE var-block\n"); }
-	  | BREAK				{ printf("statement -> BREAK\n"); }
-	  | RETURN expression	{ printf("statement -> RETURN expression\n"); }
+	  | READ var-block	{
+			stringstream s;
+			for(unsigned i = 0; i < $1.variables.size(); i++) {
+				auto var = $1.variables[i];
+				if(var.second == (unsigned)-1) {
+					s << ".< " << var.first << endl;
+				} else {
+					s << ".[]< " << var.first << ", " << var.second << std::endl;
+				}
+			}
+			$$.IR = s.str();
+		}
+	  | WRITE var-block		{
+			stringstream s;
+			for(unsigned i = 0; i < $1.variables.size(); i++) {
+				auto var = $1.variables[i];
+				if(var.second == (unsigned)-1) {
+					s << ".> " << var.first << endl;
+				} else {
+					s << ".[]> " << var.first << ", " << var.second << std::endl;
+				}
+			}
+			$$.IR = s.str();
+		}
+	  | BREAK				{
+	  
+		}
+	  | RETURN expression	{
+			stringstream s;
+			s << "ret " << $1.ret_name << endl;
+			$$.IR = s.str();
+		}
 		;
 bool-expr:
 		relation-and-expr
@@ -171,14 +391,28 @@ expression-block:
 					{ printf("expression-block -> expression COMMA expression-block\n"); }
 		;
 var-block:
-		var			{ printf("var-block -> var\n"); }
-	  | var COMMA var-block
-					{ printf("var-block -> var COMMA var-block\n"); }
+		var			{
+			$$.variables.push_back(make_pair($0.identifier, $0.index));
+		}
+	  | var COMMA var-block {
+			$$.variables = $2.variables;
+			$$.variables.push_back(make_pair($0.identifier, $0.index));
+		}
 		;
 var:
-		identifier		{ printf("var -> identifier\n"); }
-	  | identifier L_SQUARE_BRACKET expression R_SQUARE_BRACKET
-					{ printf("var -> identifier L_SQUARE_BRACKET expression R_SQUARE_BRACKET\n"); }
+		identifier		{
+			$$.identifier = $0;
+			$$.index = -1;
+		}
+	  | identifier L_SQUARE_BRACKET expression R_SQUARE_BRACKET {
+			$$.identifier = $0;
+			int index = atoi($2);
+			if(index > -1) {
+				$$.index = (unsigned)index;
+			} else {
+				//Error
+			}
+		}
 		;
 %%
 
