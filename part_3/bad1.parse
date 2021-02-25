@@ -1,0 +1,10 @@
+identifier -> IDENT(main)
+declaration-block-optional -> epsilon
+identifier -> IDENT(a)
+identifier-block -> identifier
+declaration-type -> INTEGER
+declaration -> identifier-block COLON declaration-type
+declaration-block -> declaration SEMICOLON
+declaration-block-optional -> declaration-block
+identifier -> IDENT(a)
+Error at line 8, column 3: unrecognized symbol "="
