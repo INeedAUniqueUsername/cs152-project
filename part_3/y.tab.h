@@ -104,7 +104,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 10 "862012666-862083506.y" /* yacc.c:1909  */
+#line 76 "862012666-862083506.y" /* yacc.c:1909  */
 
   double dval;
   int ival;
