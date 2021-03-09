@@ -1,81 +1,108 @@
+%language "c++"
+
 %{
 #include<stdio.h>
 #include<stdlib.h>
-using namespace std;
+#include<map>
+#include<vector>
+#include<string>
+#include<sstream>
+#include<utility>
+#include "y.tab.hh"
 	
 	void yyerror(const char *msg);
 	extern int currLine;
 	extern int currPos;
 	FILE * yyin;
 	
-	map<string, pair<string, unsigned>> symbols;
+	std::map<std::string, std::pair<std::string, unsigned>> symbols;
 	
-	string make_label() {
+	std::string make_label() {
 		static unsigned count;
-		ostringstream s;
-		s << "l" << count << endl;
+		std::ostringstream s;
+		s << "l" << count << std::endl;
 		count++;
 		return s.str();
 	}
-	string make_temp() {
+	std::string make_temp() {
 		static unsigned count;
-		ostringstream s;
-		s << "t" << count << endl;
+		std::ostringstream s;
+		s << "t" << count << std::endl;
 		count++;
 		return s.str();
 	}
-	
-	struct Statement {
-		std::string IR;
-	};
-	struct Expression {
-		std::string IR;
-		std::string ret_name;
-	};
-	struct ExpressionBlock {
-		vector<Expression> expressions;
-	};
-	
-	struct Var {
-		std::string identifier;
-		std::string index;
-	};
-	struct VarBlock {
-		std::vector<std::pair<std::string, std::string>> variables;
-	};
-	
-	struct Identifier {
-		std::string identifier;
-	};
-	struct IdentifierBlock {
-		vector<std::string> identifiers;
-	};
-	struct DeclarationBlock {
-		std::string IR;
-		std::vector<std::tuple<std::string, std::string, unsigned>> variables;
-	};
-	struct Declaration {
-		std::string IR;
-		std::vector<std::string> identifiers;
-		std::string type;
-		unsigned size;
-	};
-	struct DeclarationType {
-		std::string type;
-		unsigned size;
-	};
-	struct Operator {
-		string op;
-	};
-	struct Program {
-		string IR;
-	};
 %}
 
 %union{
   double dval;
   int ival;
   char* ident;
+  
+  	typedef struct Statement {
+		std::string IR;
+	} Statement;
+	typedef struct Expression {
+		std::string IR;
+		std::string ret_name;
+	} Expression;
+	typedef struct ExpressionBlock {
+		std::vector<Expression> expressions;
+	} ExpressionBlock;
+	
+	typedef struct Var {
+		std::string identifier;
+		std::string index;
+	} Var;
+	typedef struct VarBlock {
+		std::vector<std::pair<std::string, std::string>> variables;
+	} VarBlock;
+	
+	typedef struct Identifier {
+		std::string identifier;
+	} Identifier;
+	
+	typedef struct IdentifierBlock {
+		std::vector<std::string> identifiers;
+	} IdentifierBlock;
+	
+	typedef struct DeclarationBlock {
+		std::string IR;
+		std::vector<std::tuple<std::string, std::string, unsigned>> variables;
+	} DeclarationBlock;
+	
+	typedef struct Declaration {
+		std::string IR;
+		std::vector<std::string> identifiers;
+		std::string type;
+		unsigned size;
+	} Declaration;
+	
+	typedef struct DeclarationType {
+		std::string type;
+		unsigned size;
+	} DeclarationType;
+	
+	typedef struct Operator {
+		std::string op;
+	} Operator;
+	
+	typedef struct Program {
+		std::string IR;
+	} Program;
+	
+	
+	Statement statement;
+	Expression expression;
+	ExpressionBlock expressionBlock;
+	Var var;
+	VarBlock varBlock;
+	Identifier identifier;
+	IdentifierBlock identifierBlock;
+	Declaration declaration;
+	DeclarationBlock declarationBlock;
+	DeclarationType declarationType;
+	Operator op;
+	Program program;
 }
 
 %error-verbose
@@ -133,9 +160,9 @@ function-block: {
 
 			  }
 			| function function-block {
-				ostringstream s;
-				s << $1.IR << endl;
-				s << $2.IR << endl;
+				std::ostringstream s;
+				s << $1.IR << std::endl;
+				s << $2.IR << std::endl;
 				$$.IR = s.str();
 			}
 			;
@@ -151,7 +178,7 @@ function:
 		statement-block-optional
 		END_BODY {
 		
-			stringstream s;
+			std::stringstream s;
 			s << $2.identifier << std::endl;
 			
 			s << $5.IR << std::endl;
@@ -184,7 +211,7 @@ declaration-block:
 			}
 		}
 	  | declaration SEMICOLON declaration-block {
-			stringstream s;
+			std::stringstream s;
 			s << $1.IR;
 			s << $3.IR;
 			$$.IR = s.str();
@@ -207,7 +234,7 @@ statement-block:
 			$$.IR = $1.IR;
 		}
 	  | statement SEMICOLON statement-block {
-			stringstream s;
+			std::stringstream s;
 			s << $1.IR;
 			s << $3.IR;
 			$$.IR = s.str();
@@ -220,15 +247,15 @@ declaration:
 				$$.type = $3.type;
 				$$.size = $3.size;
 				
-				stringstream s;
+				std::stringstream s;
 				if($$.size > 0) {
 					for(unsigned i = 0; i < $$.identifiers.size(); i++) {
-						string identifier = $$.identifiers[i];
+						std::string identifier = $$.identifiers[i];
 						
 						//Check if already in symbol table
 						
 						//Make a temp
-						string temp = make_temp();
+						std::string temp = make_temp();
 						s << ". " << temp << std::endl;
 						
 						//Add to symbol table
@@ -237,12 +264,12 @@ declaration:
 					}
 				} else {
 					for(unsigned i = 0; i < $$.identifiers.size(); i++) {
-						string identifier = $$.identifiers[i];
+						std::string identifier = $$.identifiers[i];
 						
 						//Check if already in symbol table
 						
 						//Make a temp
-						string temp = make_temp();
+						std::string temp = make_temp();
 						s << ".[] " << temp << ", " << $3.size << std::endl;
 						
 						//Add to symbol table
@@ -279,10 +306,10 @@ identifier:
 		;
 statement:
 		var ASSIGN expression {
-			stringstream s;
+			std::stringstream s;
 			
 			//Lookup from symbol table
-			string temp = lookup($1.identifier);
+			std::string temp = lookup($1.identifier);
 			
 			unsigned index = $1.index;
 			if(index != -1) {
@@ -296,9 +323,9 @@ statement:
 			//TO DO: Make sure $ entries are properly indexed
 			//Remove $0
 			
-			string label0 = make_label();
-			string label1 = make_label();
-			stringstream s;
+			std::string label0 = make_label();
+			std::string label1 = make_label();
+			std::stringstream s;
 			
 			//Condition
 			s << $2.IR;
@@ -318,10 +345,10 @@ statement:
 			$$.IR = s.str();
 		}
 	  | IF bool-expr THEN statement-block ELSE statement-block ENDIF {
-			string label0 = make_label();
-			string label1 = make_label();
-			string label2 = make_label();
-			stringstream s;
+			std::string label0 = make_label();
+			std::string label1 = make_label();
+			std::string label2 = make_label();
+			std::stringstream s;
 			
 			//Condition
 			s << $2.IR;
@@ -348,38 +375,38 @@ statement:
 			
 		}
 	  | WHILE bool-expr BEGINLOOP statement-block ENDLOOP {
-			string label_body = make_label();
-			string label_condition = make_label();
+			std::string label_body = make_label();
+			std::string label_condition = make_label();
 			
-			ostringstream s;
-			s << ":= " << label_condition << endl;
-			s << ": " << label_body << endl; 
-			s << $4.IR << endl;
-			s << ": " << label_condition << endl;
-			s << $2.IR << endl;
-			s << "?:= " << label_body << $2.ret_name << endl;
+			std::ostringstream s;
+			s << ":= " << label_condition << std::endl;
+			s << ": " << label_body << std::endl; 
+			s << $4.IR << std::endl;
+			s << ": " << label_condition << std::endl;
+			s << $2.IR << std::endl;
+			s << "?:= " << label_body << $2.ret_name << std::endl;
 			
 			$$.IR = s.str();
 		}
 	  | DO BEGINLOOP statement-block ENDLOOP WHILE bool-expr {
-			string label_body = make_label();
-			string label_condition = make_label();
+			std::string label_body = make_label();
+			std::string label_condition = make_label();
 			
-			ostringstream s;
-			s << ": " << label_body << endl; 
-			s << $3.IR << endl;
-			s << ": " << label_condition << endl;
-			s << $6.IR << endl;
-			s << "?:= " << label_body << $6.ret_name << endl;
+			std::ostringstream s;
+			s << ": " << label_body << std::endl; 
+			s << $3.IR << std::endl;
+			s << ": " << label_condition << std::endl;
+			s << $6.IR << std::endl;
+			s << "?:= " << label_body << $6.ret_name << std::endl;
 			
 			$$.IR = s.str();
 		}
 	  | READ var-block	{
-			stringstream s;
+			std::stringstream s;
 			for(unsigned i = 0; i < $2.variables.size(); i++) {
 				auto var = $2.variables[i];
 				if(var.second == "") {
-					s << ".< " << var.first << endl;
+					s << ".< " << var.first << std::endl;
 				} else {
 					s << ".[]< " << var.first << ", " << var.second << std::endl;
 				}
@@ -387,7 +414,7 @@ statement:
 			$$.IR = s.str();
 		}
 	  | WRITE var-block		{
-			stringstream s;
+			std::stringstream s;
 			for(unsigned i = 0; i < $2.variables.size(); i++) {
 				auto var = $2.variables[i];
 				if(var.second == "") {
@@ -402,8 +429,8 @@ statement:
 	  
 		}
 	  | RETURN expression	{
-			stringstream s;
-			s << "ret " << $2.ret_name << endl;
+			std::stringstream s;
+			s << "ret " << $2.ret_name << std::endl;
 			$$.IR = s.str();
 		}
 		;
@@ -413,12 +440,12 @@ bool-expr:
 			$$.ret_name = $1.ret_name;
 		}
 	  | relation-and-expr OR bool-expr {
-			string temp = make_temp();
+			std::string temp = make_temp();
 	  
-			ostringstream s;
+			std::ostringstream s;
 			s << $1.IR << std::endl;
 			s << $3.IR << std::endl;
-			s << "|| " << temp << ", " << $1.ret_name << ", " << $3.ret_name << endl;
+			s << "|| " << temp << ", " << $1.ret_name << ", " << $3.ret_name << std::endl;
 			$$.IR = s.str();
 			$$.ret_name = temp;
 		}
@@ -429,12 +456,12 @@ relation-and-expr:
 			$$.ret_name = $1.ret_name;
 		}
 	  | relation-expr AND relation-and-expr {
-			string temp = make_temp();
+			std::string temp = make_temp();
 	  
-			ostringstream s;
+			std::ostringstream s;
 			s << $1.IR << std::endl;
 			s << $3.IR << std::endl;
-			s << "&& " << temp << ", " << $1.ret_name << ", " << $3.ret_name << endl;
+			s << "&& " << temp << ", " << $1.ret_name << ", " << $3.ret_name << std::endl;
 			$$.IR = s.str();
 			$$.ret_name = temp;
 		}
@@ -445,23 +472,23 @@ relation-expr:
 			$$.ret_name = $1.ret_name;
 		}
 	  | NOT relation-expr-body {
-			string temp = make_temp();
+			std::string temp = make_temp();
 	  
-			ostringstream s;
+			std::ostringstream s;
 			s << $2.IR << std::endl;
-			s << "! " << temp << ", " << $2.ret_name << endl;
+			s << "! " << temp << ", " << $2.ret_name << std::endl;
 			$$.IR = s.str();
 			$$.ret_name = temp;
 	  }
 		;
 relation-expr-body:
 		expression comp expression {
-			string temp = make_temp();
+			std::string temp = make_temp();
 	  
-			ostringstream s;
+			std::ostringstream s;
 			s << $1.IR << std::endl;
 			s << $3.IR << std::endl;
-			s << $2.op << temp << ", " << $1.ret_name << ", " << $3.ret_name << endl;
+			s << $2.op << temp << ", " << $1.ret_name << ", " << $3.ret_name << std::endl;
 			$$.IR = s.str();
 			$$.ret_name = temp;
 		}
@@ -490,23 +517,23 @@ expression:
 			$$.ret_name = $1.ret_name;
 		}
 	  | multiplicative-expr ADD expression { 
-			ostringstream s;
-			s << $1.IR << endl;
-			s << $3.IR << endl;
+			std::ostringstream s;
+			s << $1.IR << std::endl;
+			s << $3.IR << std::endl;
 			
-			string temp = make_temp();
-			s << "+ " << temp << ", " << $1.ret_name << ", " << $3.ret_name << endl;
+			std::string temp = make_temp();
+			s << "+ " << temp << ", " << $1.ret_name << ", " << $3.ret_name << std::endl;
 			
 			$$.IR = s.str();
 			$$.ret_name = temp;
 		}
 	  | multiplicative-expr SUB expression {
-			ostringstream s;
-			s << $1.IR << endl;
-			s << $3.IR << endl;
+			std::ostringstream s;
+			s << $1.IR << std::endl;
+			s << $3.IR << std::endl;
 			
-			string temp = make_temp();
-			s << "- " << temp << ", " << $1.ret_name << ", " << $3.ret_name << endl;
+			std::string temp = make_temp();
+			s << "- " << temp << ", " << $1.ret_name << ", " << $3.ret_name << std::endl;
 			
 			$$.IR = s.str();
 			$$.ret_name = temp;
@@ -518,34 +545,34 @@ multiplicative-expr:
 			$$.ret_name = $1.ret_name;
 		}
 	  | term MULT multiplicative-expr {
-			ostringstream s;
-			s << $1.IR << endl;
-			s << $3.IR << endl;
+			std::ostringstream s;
+			s << $1.IR << std::endl;
+			s << $3.IR << std::endl;
 			
-			string temp = make_temp();
-			s << "* " << temp << ", " << $1.ret_name << ", " << $3.ret_name << endl;
+			std::string temp = make_temp();
+			s << "* " << temp << ", " << $1.ret_name << ", " << $3.ret_name << std::endl;
 			
 			$$.IR = s.str();
 			$$.ret_name = temp;
 		}
 	  | term DIV multiplicative-expr {
-			ostringstream s;
-			s << $1.IR << endl;
-			s << $3.IR << endl;
+			std::ostringstream s;
+			s << $1.IR << std::endl;
+			s << $3.IR << std::endl;
 			
-			string temp = make_temp();
-			s << "/ " << temp << ", " << $1.ret_name << ", " << $3.ret_name << endl;
+			std::string temp = make_temp();
+			s << "/ " << temp << ", " << $1.ret_name << ", " << $3.ret_name << std::endl;
 			
 			$$.IR = s.str();
 			$$.ret_name = temp;
 		}
 	  | term MOD multiplicative-expr {
-			ostringstream s;
-			s << $1.IR << endl;
-			s << $3.IR << endl;
+			std::ostringstream s;
+			s << $1.IR << std::endl;
+			s << $3.IR << std::endl;
 			
-			string temp = make_temp();
-			s << "% " << temp << ", " << $1.ret_name << ", " << $3.ret_name << endl;
+			std::string temp = make_temp();
+			s << "% " << temp << ", " << $1.ret_name << ", " << $3.ret_name << std::endl;
 			
 			$$.IR = s.str();
 			$$.ret_name = temp;
@@ -557,25 +584,25 @@ term:
 			$$.ret_name = $1.ret_name;
 		}
 	  | MINUS term-body		{
-			string temp = make_temp();
+			std::string temp = make_temp();
 			
-			ostringstream s;
-			s << $2.IR << endl;
+			std::ostringstream s;
+			s << $2.IR << std::endl;
 			s << "- " << temp << ", 0, " << $2.ret_name;
 			
 			$$.IR = s.str();
 			$$.ret_name = temp;
 		}
 	  | IDENT L_PAREN expression-block R_PAREN {
-			ostringstream s;
+			std::ostringstream s;
 			for(const auto& e : $3.expressions) {
-				s << e.IR << endl;
+				s << e.IR << std::endl;
 			}
 			for(const auto& e : $3.expressions) {
-				s << "param " << e.ret_name << endl;
+				s << "param " << e.ret_name << std::endl;
 			}
-			string temp = make_temp();
-			s << "call " << $1 << ", " << temp << endl;
+			std::string temp = make_temp();
+			s << "call " << $1 << ", " << temp << std::endl;
 			
 			$$.IR = s.str();
 			$$.ret_name = temp;
@@ -587,8 +614,8 @@ term-body:
 		}
 	  | var			{
 			if($1.index != (unsigned)-1) {
-				string temp = make_temp();
-				ostringstream s;
+				std::string temp = make_temp();
+				std::ostringstream s;
 				s << "=[] " << temp << ", " << $1.identifier << ", " << $1.index;
 				$$.IR = s.str();
 				$$.ret_name = temp;
