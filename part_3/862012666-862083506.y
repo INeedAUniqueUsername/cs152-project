@@ -37,117 +37,27 @@
   double dval;
   int ival;
   char* ident;
-  
-  	typedef struct Statement {
-		std::string IR;
-	} Statement;
-	typedef struct Expression {
-		std::string IR;
-		std::string ret_name;
-	} Expression;
-	typedef struct ExpressionBlock {
-		std::vector<Expression> expressions;
-	} ExpressionBlock;
-	
-	typedef struct Var {
-		std::string identifier;
-		std::string index;
-	} Var;
-	typedef struct VarBlock {
-		std::vector<std::pair<std::string, std::string>> variables;
-	} VarBlock;
-	
-	typedef struct Identifier {
-		std::string identifier;
-	} Identifier;
-	
-	typedef struct IdentifierBlock {
-		std::vector<std::string> identifiers;
-	} IdentifierBlock;
-	
-	typedef struct DeclarationBlock {
-		std::string IR;
-		std::vector<std::tuple<std::string, std::string, unsigned>> variables;
-	} DeclarationBlock;
-	
-	typedef struct Declaration {
-		std::string IR;
-		std::vector<std::string> identifiers;
-		std::string type;
-		unsigned size;
-	} Declaration;
-	
-	typedef struct DeclarationType {
-		std::string type;
-		unsigned size;
-	} DeclarationType;
-	
-	typedef struct Operator {
-		std::string op;
-	} Operator;
-	
-	typedef struct Program {
-		std::string IR;
-	} Program;
-	
-	
-	Statement statement;
-	Expression expression;
-	ExpressionBlock expressionBlock;
-	Var var;
-	VarBlock varBlock;
-	Identifier identifier;
-	IdentifierBlock identifierBlock;
-	Declaration declaration;
-	DeclarationBlock declarationBlock;
-	DeclarationType declarationType;
-	Operator op;
-	Program program;
+  class MiniNode* node;
 }
 
 %error-verbose
 %start program
-%token FUNCTION IF ELSE THEN RETURN ENDIF WHILE DO BEGINLOOP ENDLOOP BREAK ARRAY OF
-%token BEGIN_PARAMS END_PARAMS BEGIN_LOCALS END_LOCALS BEGIN_BODY END_BODY
-%token INTEGER READ WRITE ASSIGN COMMA SEMICOLON COLON
-%token LTE GTE LT GT
-%token SUB ADD MULT DIV MOD EQ NEQ 
-%token L_PAREN R_PAREN L_SQUARE_BRACKET R_SQUARE_BRACKET
-%token TRUE FALSE AND OR NOT
+%token FUNCTION IF ELSE THEN RETURN ENDIF WHILE DO BEGINLOOP ENDLOOP BREAK ARRAY OF BEGIN_PARAMS END_PARAMS BEGIN_LOCALS END_LOCALS BEGIN_BODY END_BODY INTEGER READ WRITE ASSIGN COMMA SEMICOLON COLON LTE GTE LT GT SUB ADD MULT DIV MOD EQ NEQ L_PAREN R_PAREN L_SQUARE_BRACKET R_SQUARE_BRACKET TRUE FALSE AND OR NOT
 %token <ident> IDENT
 %token <dval> NUMBER
-%left PLUS MINUS
-%left MULT DIV
+%left PLUS MINUS MULT DIV
 %nonassoc UMINUS
 
-%type<Statement> program
-%type<Statement> function-block;
-%type<Statement> function;
-
-%type<Statement> statement-block-optional
-%type<Statement> statement-block
-%type<Statement> statement
+%type<Statement> program function-block function statement-block-optional statement-block statement
 %type<ExpressionBlock> expression-block
-%type<Expression> expression
-%type<Expression> multiplicative-expr
-%type<Expression> term
-%type<Expression> term-body
-
-%type<Expression> bool-expr
-%type<Expression> relation-and-expr
-%type<Expression> relation-expr
-%type<Expression> relation-expr-body
-
+%type<Expression> expression multiplicative-expr term term-body bool-expr relation-and-expr relation-expr relation-expr-body
 %type<Declaration> declaration
 %type<DeclarationType> declaration-type
-%type<DeclarationBlock> declaration-block
-%type<DeclarationBlock> declaration-block-optional
+%type<DeclarationBlock> declaration-block declaration-block-optional
 %type<IdentifierBlock> identifier-block
 %type<Identifier> identifier
-
 %type<Var> var
 %type<VarBlock> var-block
-
 %type<Operator> comp;
 
 %% 
