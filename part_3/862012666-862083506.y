@@ -6,8 +6,8 @@
 #include<string>
 #include<sstream>
 #include<utility>
-#include "y.tab.hh"
 	
+	int yylex();
 	void yyerror(const char *msg);
 	extern int currLine;
 	extern int currPos;
@@ -29,13 +29,77 @@
 		count++;
 		return s.str();
 	}
+
+  	typedef struct Statement {
+		std::string IR;
+	} Statement;
+	typedef struct Expression {
+		std::string IR;
+		std::string ret_name;
+	} Expression;
+	typedef struct ExpressionBlock {
+		std::vector<Expression> expressions;
+	} ExpressionBlock;
+	
+	typedef struct Var {
+		std::string identifier;
+		std::string index;
+	} Var;
+	typedef struct VarBlock {
+		std::vector<std::pair<std::string, std::string>> variables;
+	} VarBlock;
+	
+	typedef struct Identifier {
+		std::string identifier;
+	} Identifier;
+	
+	typedef struct IdentifierBlock {
+		std::vector<std::string> identifiers;
+	} IdentifierBlock;
+	
+	typedef struct DeclarationBlock {
+		std::string IR;
+		std::vector<std::tuple<std::string, std::string, unsigned>> variables;
+	} DeclarationBlock;
+	
+	typedef struct Declaration {
+		std::string IR;
+		std::vector<std::string> identifiers;
+		std::string type;
+		unsigned size;
+	} Declaration;
+	
+	typedef struct DeclarationType {
+		std::string type;
+		unsigned size;
+	} DeclarationType;
+	
+	typedef struct Operator {
+		std::string op;
+	} Operator;
+	
+	typedef struct Program {
+		std::string IR;
+	} Program;
 %}
 
 %union{
   double dval;
   int ival;
   char* ident;
-  class MiniNode* node;
+
+  	Statement statement;
+	Expression expression;
+	ExpressionBlock expressionBlock;
+	Var var;
+	VarBlock varBlock;
+	Identifier identifier;
+	IdentifierBlock identifierBlock;
+	Declaration declaration;
+	DeclarationBlock declarationBlock;
+	DeclarationType declarationType;
+	Operator op;
+	Program program;
 }
 
 %error-verbose
@@ -46,17 +110,17 @@
 %left PLUS MINUS MULT DIV
 %nonassoc UMINUS
 
-%type<Statement> program function-block function statement-block-optional statement-block statement
-%type<ExpressionBlock> expression-block
-%type<Expression> expression multiplicative-expr term term-body bool-expr relation-and-expr relation-expr relation-expr-body
-%type<Declaration> declaration
-%type<DeclarationType> declaration-type
-%type<DeclarationBlock> declaration-block declaration-block-optional
-%type<IdentifierBlock> identifier-block
-%type<Identifier> identifier
-%type<Var> var
-%type<VarBlock> var-block
-%type<Operator> comp;
+%type<statement> program function-block function statement-block-optional statement-block statement
+%type<expressionBlock> expression-block
+%type<expression> expression multiplicative-expr term term-body bool-expr relation-and-expr relation-expr relation-expr-body
+%type<declaration> declaration
+%type<declarationType> declaration-type
+%type<declarationBlock> declaration-block declaration-block-optional
+%type<identifierBlock> identifier-block
+%type<identifier> identifier
+%type<var> var
+%type<varBlock> var-block
+%type<operator> comp;
 
 %% 
 program:
