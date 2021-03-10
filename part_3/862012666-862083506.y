@@ -121,8 +121,8 @@ function-block: {
 			  }
 			| function function-block {
 				std::ostringstream s;
-				s << $1.IR << std::endl;
-				s << $2.IR << std::endl;
+				s << $1.IR;
+				s << $2.IR;
 				$$.IR = strdup(s.str().c_str());
 			}
 			;
@@ -213,10 +213,9 @@ declaration:
 			while(i >> identifier) {
 				string temp = make_temp();
 				symbols[identifier] = temp;
-				o << ". " << temp;
+				o << ". " << temp << endl;
 				o2 << " " << temp;
 			}
-			o << endl;
 
 			$$.size = 0;
 			$$.IR = strdup(o.str().c_str());
@@ -236,7 +235,6 @@ declaration:
 				o << ".[] " << temp << ", " << size << endl;
 				o2 << " " << temp;
 			}
-			o << endl;
 
 			$$.size = (unsigned)size;
 			$$.IR = strdup(o.str().c_str());
@@ -260,12 +258,12 @@ identifier:
 		}
 		;
 statement:
-		identifier ASSIGN expression {
-			//Lookup from symbol table
+		IDENT ASSIGN expression {
 			//std::string temp = lookup($1.identifier);
-			string temp($1.identifier);
+			string temp = symbols[$1];
 
 			ostringstream s;
+			s << $3.IR;
 			s << "= " << temp << ", " << $3.ret_name << std::endl;
 
 			$$.IR = strdup(s.str().c_str());
@@ -372,7 +370,7 @@ statement:
 		}
 	  | RETURN expression	{
 			ostringstream s;
-			s << $2.IR << endl;
+			s << $2.IR;
 			s << "ret " << $2.ret_name << endl;
 			$$.IR = strdup(s.str().c_str());
 		}
@@ -380,48 +378,48 @@ statement:
 read-block:
 		READ IDENT		{
 			ostringstream s;
-			s << ".< " << $2 << endl;
+			s << ".< " << symbols[$2] << endl;
 			$$.IR = strdup(s.str().c_str());
 		}
 	  | READ IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET {
 			ostringstream s;
-			s << ".< " << $2 << ", " << $4.ret_name << endl;
+			s << ".< " << symbols[$2] << ", " << $4.ret_name << endl;
 			$$.IR = strdup(s.str().c_str());
 		}
 	  | read-block IDENT	{
 			ostringstream s;
-			s << $1.IR << endl;
-			s << ".< " << $2 << endl;
+			s << $1.IR;
+			s << ".< " << symbols[$2] << endl;
 			$$.IR = strdup(s.str().c_str());
 		}
 	  | read-block IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET {
 			ostringstream s;
-			s << $1.IR << endl;
-			s << ".< " << $2 << ", " << $4.ret_name << endl;
+			s << $1.IR;
+			s << ".< " << symbols[$2] << ", " << $4.ret_name << endl;
 			$$.IR = strdup(s.str().c_str());
 		}
 		;
 write-block:
 		WRITE IDENT		{
 			ostringstream s;
-			s << ".> " << $2 << endl;
+			s << ".> " << symbols[$2] << endl;
 			$$.IR = strdup(s.str().c_str());
 		}
 	  | WRITE IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET {
 			ostringstream s;
-			s << ".> " << $2 << ", " << $4.ret_name << endl;
+			s << ".> " << symbols[$2] << ", " << $4.ret_name << endl;
 			$$.IR = strdup(s.str().c_str());
 		}
 	  | write-block IDENT	{
 			ostringstream s;
-			s << $1.IR << endl;
-			s << ".> " << $2 << endl;
+			s << $1.IR;
+			s << ".> " << symbols[$2] << endl;
 			$$.IR = strdup(s.str().c_str());
 		}
 	  | write-block IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET {
 			ostringstream s;
-			s << $1.IR << endl;
-			s << ".> " << $2 << ", " << $4.ret_name << endl;
+			s << $1.IR;
+			s << ".> " << symbols[$2] << ", " << $4.ret_name << endl;
 			$$.IR = strdup(s.str().c_str());
 		}
 		;
@@ -432,8 +430,8 @@ bool-expr:
 		}
 	  | relation-and-expr OR bool-expr {
 			ostringstream s;
-			s << $1.IR << endl;
-			s << $3.IR << endl;
+			s << $1.IR;
+			s << $3.IR;
 
 			string temp = make_temp();
 			s << ". " << temp << endl;
@@ -449,8 +447,8 @@ relation-and-expr:
 		}
 	  | relation-expr AND relation-and-expr {
 			std::ostringstream s;
-			s << $1.IR << std::endl;
-			s << $3.IR << std::endl;
+			s << $1.IR;
+			s << $3.IR;
 			
 			std::string temp = make_temp();
 			s << ". " << temp << endl;
@@ -470,7 +468,7 @@ relation-expr:
 			std::string temp = make_temp();
 			s << ". " << temp << endl;
 
-			s << $2.IR << std::endl;
+			s << $2.IR;
 			s << "! " << temp << ", " << $2.ret_name << std::endl;
 			$$.IR = strdup(s.str().c_str());
 			$$.ret_name = strdup(temp.c_str());
@@ -480,8 +478,8 @@ relation-expr-body:
 		expression comp expression {
 		
 			std::ostringstream s;
-			s << $1.IR << endl;
-			s << $3.IR << endl;
+			s << $1.IR;
+			s << $3.IR;
 			string temp = make_temp();
 			s << ". " << temp << endl;
 			s << $2.op << " " << temp << ", " << $1.ret_name << ", " << $3.ret_name << std::endl;
@@ -515,10 +513,11 @@ expression:
 		}
 	  | multiplicative-expr ADD expression { 
 			std::ostringstream s;
-			s << $1.IR << std::endl;
-			s << $3.IR << std::endl;
+			s << $1.IR;
+			s << $3.IR;
 			
 			std::string temp = make_temp();
+			s << ". " << temp << endl;
 			s << "+ " << temp << ", " << $1.ret_name << ", " << $3.ret_name << std::endl;
 			
 			$$.IR = strdup(s.str().c_str());
@@ -526,10 +525,11 @@ expression:
 		}
 	  | multiplicative-expr SUB expression {
 			std::ostringstream s;
-			s << $1.IR << std::endl;
-			s << $3.IR << std::endl;
+			s << $1.IR;
+			s << $3.IR;
 			
 			std::string temp = make_temp();
+			s << ". " << temp << endl;
 			s << "- " << temp << ", " << $1.ret_name << ", " << $3.ret_name << std::endl;
 			
 			$$.IR = strdup(s.str().c_str());
@@ -543,10 +543,11 @@ multiplicative-expr:
 		}
 	  | term MULT multiplicative-expr {
 			std::ostringstream s;
-			s << $1.IR << std::endl;
-			s << $3.IR << std::endl;
+			s << $1.IR;
+			s << $3.IR;
 			
 			std::string temp = make_temp();
+			s << ". " << temp << endl;
 			s << "* " << temp << ", " << $1.ret_name << ", " << $3.ret_name << std::endl;
 			
 			$$.IR = strdup(s.str().c_str());
@@ -554,10 +555,11 @@ multiplicative-expr:
 		}
 	  | term DIV multiplicative-expr {
 			std::ostringstream s;
-			s << $1.IR << std::endl;
-			s << $3.IR << std::endl;
+			s << $1.IR;
+			s << $3.IR;
 			
 			std::string temp = make_temp();
+			s << ". " << temp << endl;
 			s << "/ " << temp << ", " << $1.ret_name << ", " << $3.ret_name << std::endl;
 			
 			$$.IR = strdup(s.str().c_str());
@@ -565,10 +567,11 @@ multiplicative-expr:
 		}
 	  | term MOD multiplicative-expr {
 			std::ostringstream s;
-			s << $1.IR << std::endl;
-			s << $3.IR << std::endl;
+			s << $1.IR;
+			s << $3.IR;
 			
 			std::string temp = make_temp();
+			s << ". " << temp << endl;
 			s << "% " << temp << ", " << $1.ret_name << ", " << $3.ret_name << std::endl;
 			
 			$$.IR = strdup(s.str().c_str());
@@ -584,8 +587,9 @@ term:
 			std::string temp = make_temp();
 			
 			std::ostringstream s;
-			s << $2.IR << std::endl;
-			s << "- " << temp << ", 0, " << $2.ret_name;
+			s << $2.IR;
+			s << ". " << temp << endl;
+			s << "- " << temp << ", 0, " << $2.ret_name << endl;
 			
 			$$.IR = strdup(s.str().c_str());
 			$$.ret_name = strdup(temp.c_str());
@@ -601,7 +605,8 @@ term:
 			}
 
 			std::string temp = make_temp();
-			s << "call " << $1 << ", " << temp << std::endl;
+			s << ". " << temp << endl;
+			s << "call " << $1 << ", " << temp << endl;
 			
 			$$.IR = strdup(s.str().c_str());
 			$$.ret_name = strdup(temp.c_str());
