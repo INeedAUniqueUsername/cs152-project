@@ -1096,7 +1096,7 @@ YY_RULE_SETUP
 case 50:
 YY_RULE_SETUP
 #line 85 "862012666-862083506.flex"
-{ /* printf("NUMBER %s\n", yytext); */ currPos += yyleng; yylval.dval = atof(yytext); return NUMBER;}
+{ /* printf("NUMBER %s\n", yytext); */ currPos += yyleng; yylval.ival = atoi(yytext); return NUMBER;}
 	YY_BREAK
 case 51:
 YY_RULE_SETUP

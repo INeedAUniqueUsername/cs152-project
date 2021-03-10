@@ -104,13 +104,62 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 75 "862012666-862083506.y" /* yacc.c:1909  */
+#line 40 "862012666-862083506.y" /* yacc.c:1909  */
 
-  double dval;
   int ival;
   char* ident;
 
-#line 114 "y.tab.h" /* yacc.c:1909  */
+	struct {
+		char* IR;
+	} Statement;
+	
+	struct {
+		char* IR;
+		char* ret_name;
+	} Expression;
+
+	struct {
+		char* IR;
+		char* ret_names;
+	} FunctionArgs;
+	
+	struct {
+		char* identifier;
+		char* index;
+	} Var;
+	
+	struct Identifier {
+		char* identifier;
+	} Identifier;
+	
+	struct IdentifierBlock {
+		char* identifiers;
+	} IdentifierBlock;
+	
+	struct {
+		char* IR;
+		char* identifiers;
+	} DeclarationBlock;
+	
+	struct {
+		char* IR;
+		char* identifiers;
+		unsigned size;
+	} Declaration;
+	
+	struct {
+		unsigned size;
+	} DeclarationType;
+	
+	struct {
+		char* op;
+	} Operator;
+	
+	struct {
+		char* IR;
+	} Program;
+
+#line 163 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

@@ -1,131 +1,119 @@
 %{
+
+//TO DO: FIX TEMP DECLARATIONS
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<map>
 #include<vector>
 #include<string>
+#include<string.h>
 #include<sstream>
 #include<utility>
+#include<string>
+#include<iostream>
+using namespace std;
 	
 	int yylex();
 	void yyerror(const char *msg);
 	extern int currLine;
 	extern int currPos;
-	FILE * yyin;
 	
-	std::map<std::string, std::pair<std::string, unsigned>> symbols;
+	map<string, string> symbols;
 	
-	std::string make_label() {
+	string make_label() {
 		static unsigned count;
-		std::ostringstream s;
-		s << "l" << count << std::endl;
+		ostringstream s;
+		s << "__label__" << count;
 		count++;
 		return s.str();
 	}
-	std::string make_temp() {
+	string make_temp() {
 		static unsigned count;
-		std::ostringstream s;
-		s << "t" << count << std::endl;
+		ostringstream s;
+		s << "__temp__" << count;
 		count++;
 		return s.str();
 	}
-
-  	typedef struct Statement {
-		std::string IR;
-	} Statement;
-	typedef struct Expression {
-		std::string IR;
-		std::string ret_name;
-	} Expression;
-	typedef struct ExpressionBlock {
-		std::vector<Expression> expressions;
-	} ExpressionBlock;
-	
-	typedef struct Var {
-		std::string identifier;
-		std::string index;
-	} Var;
-	typedef struct VarBlock {
-		std::vector<std::pair<std::string, std::string>> variables;
-	} VarBlock;
-	
-	typedef struct Identifier {
-		std::string identifier;
-	} Identifier;
-	
-	typedef struct IdentifierBlock {
-		std::vector<std::string> identifiers;
-	} IdentifierBlock;
-	
-	typedef struct DeclarationBlock {
-		std::string IR;
-		std::vector<std::tuple<std::string, std::string, unsigned>> variables;
-	} DeclarationBlock;
-	
-	typedef struct Declaration {
-		std::string IR;
-		std::vector<std::string> identifiers;
-		std::string type;
-		unsigned size;
-	} Declaration;
-	
-	typedef struct DeclarationType {
-		std::string type;
-		unsigned size;
-	} DeclarationType;
-	
-	typedef struct Operator {
-		std::string op;
-	} Operator;
-	
-	typedef struct Program {
-		std::string IR;
-	} Program;
 %}
 
 %union{
-  double dval;
   int ival;
   char* ident;
 
-  	Statement statement;
-	Expression expression;
-	ExpressionBlock expressionBlock;
-	Var var;
-	VarBlock varBlock;
-	Identifier identifier;
-	IdentifierBlock identifierBlock;
-	Declaration declaration;
-	DeclarationBlock declarationBlock;
-	DeclarationType declarationType;
-	Operator op;
-	Program program;
+	struct {
+		char* IR;
+	} Statement;
+	
+	struct {
+		char* IR;
+		char* ret_name;
+	} Expression;
+
+	struct {
+		char* IR;
+		char* ret_names;
+	} FunctionArgs;
+	
+	struct {
+		char* identifier;
+		char* index;
+	} Var;
+	
+	struct Identifier {
+		char* identifier;
+	} Identifier;
+	
+	struct IdentifierBlock {
+		char* identifiers;
+	} IdentifierBlock;
+	
+	struct {
+		char* IR;
+		char* identifiers;
+	} DeclarationBlock;
+	
+	struct {
+		char* IR;
+		char* identifiers;
+		unsigned size;
+	} Declaration;
+	
+	struct {
+		unsigned size;
+	} DeclarationType;
+	
+	struct {
+		char* op;
+	} Operator;
+	
+	struct {
+		char* IR;
+	} Program;
 }
 
 %error-verbose
 %start program
 %token FUNCTION IF ELSE THEN RETURN ENDIF WHILE DO BEGINLOOP ENDLOOP BREAK ARRAY OF BEGIN_PARAMS END_PARAMS BEGIN_LOCALS END_LOCALS BEGIN_BODY END_BODY INTEGER READ WRITE ASSIGN COMMA SEMICOLON COLON LTE GTE LT GT SUB ADD MULT DIV MOD EQ NEQ L_PAREN R_PAREN L_SQUARE_BRACKET R_SQUARE_BRACKET TRUE FALSE AND OR NOT
 %token <ident> IDENT
-%token <dval> NUMBER
+%token <ival> NUMBER
 %left PLUS MINUS MULT DIV
 %nonassoc UMINUS
 
-%type<statement> program function-block function statement-block-optional statement-block statement
-%type<expressionBlock> expression-block
-%type<expression> expression multiplicative-expr term term-body bool-expr relation-and-expr relation-expr relation-expr-body
-%type<declaration> declaration
-%type<declarationType> declaration-type
-%type<declarationBlock> declaration-block declaration-block-optional
-%type<identifierBlock> identifier-block
-%type<identifier> identifier
-%type<var> var
-%type<varBlock> var-block
-%type<operator> comp;
+%type<Statement> program function-block function statement-block-optional statement-block statement
+%type<FunctionArgs> function-args
+%type<Expression> expression multiplicative-expr term term-body bool-expr relation-and-expr relation-expr relation-expr-body
+%type<Declaration> declaration
+%type<DeclarationBlock> declaration-block declaration-block-optional
+%type<IdentifierBlock> identifier-block
+%type<Identifier> identifier
+%type<Statement> read-block write-block
+%type<Operator> comp;
 
-%% 
+%%
 program:
 		function-block				{
-			$$.IR = $1.IR;
+			cout << $1.IR;
 		}
 		;
 function-block: {
@@ -135,11 +123,11 @@ function-block: {
 				std::ostringstream s;
 				s << $1.IR << std::endl;
 				s << $2.IR << std::endl;
-				$$.IR = s.str();
+				$$.IR = strdup(s.str().c_str());
 			}
 			;
 function:
-		FUNCTION identifier SEMICOLON
+		FUNCTION IDENT SEMICOLON
 		BEGIN_PARAMS
 		declaration-block-optional
 		END_PARAMS
@@ -150,125 +138,120 @@ function:
 		statement-block-optional
 		END_BODY {
 		
-			std::stringstream s;
-			s << $2.identifier << std::endl;
-			
-			s << $5.IR << std::endl;
-			
-			s << $8.IR << std::endl;
-			
-			s << $11.IR<< std::endl;
-			
-			
+			ostringstream s;
+
+			s << "func " << $2 << std::endl;
+			s << $5.IR;
+
+			istringstream i($5.identifiers);
+			string identifier;
+			int count = 0;
+			while(i >> identifier) {
+				s << "= " << identifier << " $" << count << endl;
+				count++;
+			}
+
+			s << $8.IR;
+			s << $11.IR;
 			
 			//Free the symbols and temps
 			
 			s << "endfunc" << std::endl;
 			
-			$$.IR = s.str();
+			$$.IR = strdup(s.str().c_str());
 		}
 		;
 declaration-block-optional:
-		{}
+		{	$$.IR = strdup("");
+			$$.identifiers = strdup("");
+		}
 	  | declaration-block {
-			$$.IR = $1.IR;
-			$$.variables = $1.IR;
+			$$.IR = strdup($1.IR);
+			$$.identifiers = strdup($1.identifiers);
 		}
 		;
 declaration-block:
 	    declaration SEMICOLON {
-			$$.IR = $1.IR;
-			for(unsigned i = 0; i < $1.identifiers.size(); i++) {
-				$$.variables.push_back(make_tuple($1.identifiers[i], $1.type, $1.size));
-			}
+			$$.IR = strdup($1.IR);
+			$$.identifiers = strdup($1.identifiers);
 		}
 	  | declaration SEMICOLON declaration-block {
-			std::stringstream s;
+			ostringstream s;
 			s << $1.IR;
 			s << $3.IR;
-			$$.IR = s.str();
-			
-			$$.variables = $1.variables;
-			
-			for(unsigned i = 0; i < $1.identifiers.size(); i++) {
-				$$.variables.push_back(make_tuple($1.identifiers[i], $1.type, $1.size));
-			}
+			$$.IR = strdup(s.str().c_str());
+
+			ostringstream s2;
+			s2 << $1.identifiers << " " << $3.identifiers;
+			$$.identifiers = strdup(s2.str().c_str());
 		}
 		;
 statement-block-optional: 
-		{}
+		{	$$.IR = strdup(""); }
 	  | statement-block {
-			$$.IR = $1.IR;
+			$$.IR = strdup($1.IR);
 		}
 		;
 statement-block:
 	    statement SEMICOLON {
-			$$.IR = $1.IR;
+			$$.IR = strdup($1.IR);
 		}
 	  | statement SEMICOLON statement-block {
-			std::stringstream s;
+			ostringstream s;
 			s << $1.IR;
 			s << $3.IR;
-			$$.IR = s.str();
+
+			$$.IR = strdup(s.str().c_str());
 		}
 		;
 declaration:
-		identifier-block COLON declaration-type {
-		
-				$$.identifiers = $1.identifiers;
-				$$.type = $3.type;
-				$$.size = $3.size;
-				
-				std::stringstream s;
-				if($$.size > 0) {
-					for(unsigned i = 0; i < $$.identifiers.size(); i++) {
-						std::string identifier = $$.identifiers[i];
-						
-						//Check if already in symbol table
-						
-						//Make a temp
-						std::string temp = make_temp();
-						s << ". " << temp << std::endl;
-						
-						//Add to symbol table
-						
-						//Make sure to free the symbol table entry and temp
-					}
-				} else {
-					for(unsigned i = 0; i < $$.identifiers.size(); i++) {
-						std::string identifier = $$.identifiers[i];
-						
-						//Check if already in symbol table
-						
-						//Make a temp
-						std::string temp = make_temp();
-						s << ".[] " << temp << ", " << $3.size << std::endl;
-						
-						//Add to symbol table
-						
-						//Make sure to free the symbol table entry and temp
-					}
-				}
-				$$.IR = s.str();
+		identifier-block COLON INTEGER {
+			ostringstream o;
+			ostringstream o2;
+			istringstream i($1.identifiers);
+			string identifier;
+			while(i >> identifier) {
+				string temp = make_temp();
+				symbols[identifier] = temp;
+				o << ". " << temp;
+				o2 << " " << temp;
+			}
+			o << endl;
+
+			$$.size = 0;
+			$$.IR = strdup(o.str().c_str());
+			$$.identifiers = strdup(o2.str().c_str());
 		}
-		;
-declaration-type:
-		INTEGER	{
-				$$.type = "integer";
-				$$.size = 0;
+	  | identifier-block COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {
+			ostringstream o;
+			ostringstream o2;
+			istringstream i($1.identifiers);
+
+			string identifier;
+			int size = $5;
+			while(i >> identifier) {
+				string temp = make_temp();
+				symbols[identifier] = temp;
+
+				o << ".[] " << temp << ", " << size << endl;
+				o2 << " " << temp;
+			}
+			o << endl;
+
+			$$.size = (unsigned)size;
+			$$.IR = strdup(o.str().c_str());
+			$$.identifiers = strdup(o2.str().c_str());
 		}
-	  | ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {
-				$$.type = "integer";
-				$$.size = atoi($3);
-		}
+
 		;
 identifier-block:
 		identifier		{
-			$$.identifiers.push_back($1);
+			$$.identifiers = strdup($1.identifier);
 		}
       | identifier COMMA identifier-block {
-			$$.identifiers = $3.identifiers;
-			$$.identifiers.push_back($1);
+			ostringstream s;
+			s << $1.identifier << " " << $3.identifiers;
+			$$.identifiers = strdup(s.str().c_str());
 		}
 		;
 identifier:
@@ -277,19 +260,25 @@ identifier:
 		}
 		;
 statement:
-		var ASSIGN expression {
-			std::stringstream s;
-			
+		identifier ASSIGN expression {
 			//Lookup from symbol table
-			std::string temp = lookup($1.identifier);
-			
-			unsigned index = $1.index;
-			if(index != -1) {
-				s << "=[] " << temp << ", " << $3.ret_name << ", " << index << std::endl;
-			} else {
-				s << "= " << temp << ", " << $3.ret_name << std::endl;
-			}
-			$$.IR = s.str();
+			//std::string temp = lookup($1.identifier);
+			string temp($1.identifier);
+
+			ostringstream s;
+			s << "= " << temp << ", " << $3.ret_name << std::endl;
+
+			$$.IR = strdup(s.str().c_str());
+		}
+	  | identifier L_SQUARE_BRACKET expression R_SQUARE_BRACKET ASSIGN expression {
+			//Lookup from symbol table
+			//std::string temp = lookup($1.identifier);
+			string temp($1.identifier);
+
+			ostringstream s;
+			s << "[]= " << temp << ", " << $3.ret_name << ", " << $6.ret_name << std::endl;
+
+			$$.IR = strdup(s.str().c_str());
 		}
 	  | IF bool-expr THEN statement-block ENDIF {
 			//TO DO: Make sure $ entries are properly indexed
@@ -297,7 +286,7 @@ statement:
 			
 			std::string label0 = make_label();
 			std::string label1 = make_label();
-			std::stringstream s;
+			ostringstream s;
 			
 			//Condition
 			s << $2.IR;
@@ -306,7 +295,7 @@ statement:
 			
 			//Skip branch
 			s << ":= " << label1 << std::endl;
-			
+
 			//Branch
 			s << ":" << label0 << std::endl;
 			s << $4.IR;
@@ -314,13 +303,13 @@ statement:
 			//Finally
 			s << ": " << label1 << std::endl;
 			
-			$$.IR = s.str();
+			$$.IR = strdup(s.str().c_str());
 		}
 	  | IF bool-expr THEN statement-block ELSE statement-block ENDIF {
 			std::string label0 = make_label();
 			std::string label1 = make_label();
 			std::string label2 = make_label();
-			std::stringstream s;
+			ostringstream s;
 			
 			//Condition
 			s << $2.IR;
@@ -343,7 +332,7 @@ statement:
 			//Finally
 			s << ": " << label2 << std::endl;
 			s << $6.IR;
-			$$.IR = s.str();
+			$$.IR = strdup(s.str().c_str());
 			
 		}
 	  | WHILE bool-expr BEGINLOOP statement-block ENDLOOP {
@@ -358,7 +347,7 @@ statement:
 			s << $2.IR << std::endl;
 			s << "?:= " << label_body << $2.ret_name << std::endl;
 			
-			$$.IR = s.str();
+			$$.IR = strdup(s.str().c_str());
 		}
 	  | DO BEGINLOOP statement-block ENDLOOP WHILE bool-expr {
 			std::string label_body = make_label();
@@ -371,122 +360,158 @@ statement:
 			s << $6.IR << std::endl;
 			s << "?:= " << label_body << $6.ret_name << std::endl;
 			
-			$$.IR = s.str();
+			$$.IR = strdup(s.str().c_str());
 		}
-	  | READ var-block	{
-			std::stringstream s;
-			for(unsigned i = 0; i < $2.variables.size(); i++) {
-				auto var = $2.variables[i];
-				if(var.second == "") {
-					s << ".< " << var.first << std::endl;
-				} else {
-					s << ".[]< " << var.first << ", " << var.second << std::endl;
-				}
-			}
-			$$.IR = s.str();
+	  | read-block	{
+			$$.IR = strdup($1.IR);
 		}
-	  | WRITE var-block		{
-			std::stringstream s;
-			for(unsigned i = 0; i < $2.variables.size(); i++) {
-				auto var = $2.variables[i];
-				if(var.second == "") {
-					s << ".> " << var.first << std::endl;
-				} else {
-					s << ".[]> " << var.first << ", " << var.second << std::endl;
-				}
-			}
-			$$.IR = s.str();
+	  | write-block	{
+			$$.IR = strdup($1.IR);
 		}
 	  | BREAK				{
-	  
 		}
 	  | RETURN expression	{
-			std::stringstream s;
-			s << "ret " << $2.ret_name << std::endl;
-			$$.IR = s.str();
+			ostringstream s;
+			s << $2.IR << endl;
+			s << "ret " << $2.ret_name << endl;
+			$$.IR = strdup(s.str().c_str());
+		}
+		;
+read-block:
+		READ IDENT		{
+			ostringstream s;
+			s << ".< " << $2 << endl;
+			$$.IR = strdup(s.str().c_str());
+		}
+	  | READ IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET {
+			ostringstream s;
+			s << ".< " << $2 << ", " << $4.ret_name << endl;
+			$$.IR = strdup(s.str().c_str());
+		}
+	  | read-block IDENT	{
+			ostringstream s;
+			s << $1.IR << endl;
+			s << ".< " << $2 << endl;
+			$$.IR = strdup(s.str().c_str());
+		}
+	  | read-block IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET {
+			ostringstream s;
+			s << $1.IR << endl;
+			s << ".< " << $2 << ", " << $4.ret_name << endl;
+			$$.IR = strdup(s.str().c_str());
+		}
+		;
+write-block:
+		WRITE IDENT		{
+			ostringstream s;
+			s << ".> " << $2 << endl;
+			$$.IR = strdup(s.str().c_str());
+		}
+	  | WRITE IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET {
+			ostringstream s;
+			s << ".> " << $2 << ", " << $4.ret_name << endl;
+			$$.IR = strdup(s.str().c_str());
+		}
+	  | write-block IDENT	{
+			ostringstream s;
+			s << $1.IR << endl;
+			s << ".> " << $2 << endl;
+			$$.IR = strdup(s.str().c_str());
+		}
+	  | write-block IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET {
+			ostringstream s;
+			s << $1.IR << endl;
+			s << ".> " << $2 << ", " << $4.ret_name << endl;
+			$$.IR = strdup(s.str().c_str());
 		}
 		;
 bool-expr:
 		relation-and-expr {
 			$$.IR = $1.IR;
-			$$.ret_name = $1.ret_name;
+			$$.ret_name = strdup($1.ret_name);
 		}
 	  | relation-and-expr OR bool-expr {
-			std::string temp = make_temp();
-	  
-			std::ostringstream s;
-			s << $1.IR << std::endl;
-			s << $3.IR << std::endl;
-			s << "|| " << temp << ", " << $1.ret_name << ", " << $3.ret_name << std::endl;
-			$$.IR = s.str();
-			$$.ret_name = temp;
+			ostringstream s;
+			s << $1.IR << endl;
+			s << $3.IR << endl;
+
+			string temp = make_temp();
+			s << ". " << temp << endl;
+			s << "|| " << temp << ", " << $1.ret_name << ", " << $3.ret_name << endl;
+			$$.IR = strdup(s.str().c_str());
+			$$.ret_name = strdup(temp.c_str());
 		}
 		;
 relation-and-expr:
 		relation-expr {
 			$$.IR = $1.IR;
-			$$.ret_name = $1.ret_name;
+			$$.ret_name = strdup($1.ret_name);
 		}
 	  | relation-expr AND relation-and-expr {
-			std::string temp = make_temp();
-	  
 			std::ostringstream s;
 			s << $1.IR << std::endl;
 			s << $3.IR << std::endl;
+			
+			std::string temp = make_temp();
+			s << ". " << temp << endl;
 			s << "&& " << temp << ", " << $1.ret_name << ", " << $3.ret_name << std::endl;
-			$$.IR = s.str();
-			$$.ret_name = temp;
+			$$.IR = strdup(s.str().c_str());
+			$$.ret_name = strdup(temp.c_str());
 		}
 		;
 relation-expr:
 		relation-expr-body {
 			$$.IR = $1.IR;
-			$$.ret_name = $1.ret_name;
+			$$.ret_name = strdup($1.ret_name);
 		}
 	  | NOT relation-expr-body {
-			std::string temp = make_temp();
-	  
 			std::ostringstream s;
+			
+			std::string temp = make_temp();
+			s << ". " << temp << endl;
+
 			s << $2.IR << std::endl;
 			s << "! " << temp << ", " << $2.ret_name << std::endl;
-			$$.IR = s.str();
-			$$.ret_name = temp;
+			$$.IR = strdup(s.str().c_str());
+			$$.ret_name = strdup(temp.c_str());
 	  }
 		;
 relation-expr-body:
 		expression comp expression {
-			std::string temp = make_temp();
-	  
+		
 			std::ostringstream s;
-			s << $1.IR << std::endl;
-			s << $3.IR << std::endl;
-			s << $2.op << temp << ", " << $1.ret_name << ", " << $3.ret_name << std::endl;
-			$$.IR = s.str();
-			$$.ret_name = temp;
+			s << $1.IR << endl;
+			s << $3.IR << endl;
+			string temp = make_temp();
+			s << ". " << temp << endl;
+			s << $2.op << " " << temp << ", " << $1.ret_name << ", " << $3.ret_name << std::endl;
+			$$.IR = strdup(s.str().c_str());
+			$$.ret_name = strdup(temp.c_str());
 		}
 	  | TRUE						{
-			$$.ret_name = "true";
+			$$.ret_name = strdup("true");
 		}
 	  | FALSE						{
-			$$.ret_name = "false";
+			$$.ret_name = strdup("false");
 		}
 	  | L_PAREN bool-expr R_PAREN	{
-			$$.IR = $2.IR;
-			$$.ret_name = $2.ret_name;
+			$$.IR = strdup($2.IR);
+			$$.ret_name = strdup($2.ret_name);
 		}
 		;
+
 comp:
-		EQ			{ $$.op = "=="; }
-	  | NEQ			{ $$.op = "!="; }
-	  | LT			{ $$.op = "<"; }
-	  | GT			{ $$.op = ">"; }
-	  | LTE			{ $$.op = "<="; }
-	  | GTE			{ $$.op = ">="; }
+		EQ			{ $$.op = strdup("=="); }
+	  | NEQ			{ $$.op = strdup("!="); }
+	  | LT			{ $$.op = strdup("<"); }
+	  | GT			{ $$.op = strdup(">"); }
+	  | LTE			{ $$.op = strdup("<="); }
+	  | GTE			{ $$.op = strdup(">="); }
 		;
 expression:
 		multiplicative-expr {
-			$$.IR = $1.IR;
-			$$.ret_name = $1.ret_name;
+			$$.IR = strdup($1.IR);
+			$$.ret_name = strdup($1.ret_name);
 		}
 	  | multiplicative-expr ADD expression { 
 			std::ostringstream s;
@@ -496,8 +521,8 @@ expression:
 			std::string temp = make_temp();
 			s << "+ " << temp << ", " << $1.ret_name << ", " << $3.ret_name << std::endl;
 			
-			$$.IR = s.str();
-			$$.ret_name = temp;
+			$$.IR = strdup(s.str().c_str());
+			$$.ret_name = strdup(temp.c_str());
 		}
 	  | multiplicative-expr SUB expression {
 			std::ostringstream s;
@@ -507,14 +532,14 @@ expression:
 			std::string temp = make_temp();
 			s << "- " << temp << ", " << $1.ret_name << ", " << $3.ret_name << std::endl;
 			
-			$$.IR = s.str();
-			$$.ret_name = temp;
+			$$.IR = strdup(s.str().c_str());
+			$$.ret_name = strdup(temp.c_str());
 		}
 		;
 multiplicative-expr:
 		term {
-			$$.IR = $1.IR;
-			$$.ret_name = $1.ret_name;
+			$$.IR = strdup($1.IR);
+			$$.ret_name = strdup($1.ret_name);
 		}
 	  | term MULT multiplicative-expr {
 			std::ostringstream s;
@@ -524,8 +549,8 @@ multiplicative-expr:
 			std::string temp = make_temp();
 			s << "* " << temp << ", " << $1.ret_name << ", " << $3.ret_name << std::endl;
 			
-			$$.IR = s.str();
-			$$.ret_name = temp;
+			$$.IR = strdup(s.str().c_str());
+			$$.ret_name = strdup(temp.c_str());
 		}
 	  | term DIV multiplicative-expr {
 			std::ostringstream s;
@@ -535,8 +560,8 @@ multiplicative-expr:
 			std::string temp = make_temp();
 			s << "/ " << temp << ", " << $1.ret_name << ", " << $3.ret_name << std::endl;
 			
-			$$.IR = s.str();
-			$$.ret_name = temp;
+			$$.IR = strdup(s.str().c_str());
+			$$.ret_name = strdup(temp.c_str());
 		}
 	  | term MOD multiplicative-expr {
 			std::ostringstream s;
@@ -546,14 +571,14 @@ multiplicative-expr:
 			std::string temp = make_temp();
 			s << "% " << temp << ", " << $1.ret_name << ", " << $3.ret_name << std::endl;
 			
-			$$.IR = s.str();
-			$$.ret_name = temp;
+			$$.IR = strdup(s.str().c_str());
+			$$.ret_name = strdup(temp.c_str());
 		}
 		;
 term:
 		term-body			{
-			$$.IR = $1.IR;
-			$$.ret_name = $1.ret_name;
+			$$.IR = strdup($1.IR);
+			$$.ret_name = strdup($1.ret_name);
 		}
 	  | MINUS term-body		{
 			std::string temp = make_temp();
@@ -562,87 +587,76 @@ term:
 			s << $2.IR << std::endl;
 			s << "- " << temp << ", 0, " << $2.ret_name;
 			
-			$$.IR = s.str();
-			$$.ret_name = temp;
+			$$.IR = strdup(s.str().c_str());
+			$$.ret_name = strdup(temp.c_str());
 		}
-	  | IDENT L_PAREN expression-block R_PAREN {
+	  | IDENT L_PAREN function-args R_PAREN {
 			std::ostringstream s;
-			for(const auto& e : $3.expressions) {
-				s << e.IR << std::endl;
+			s << $3.IR;
+
+			istringstream i($3.ret_names);
+			string ret_name;
+			while(i >> ret_name) {
+				s << "param " << ret_name << endl;
 			}
-			for(const auto& e : $3.expressions) {
-				s << "param " << e.ret_name << std::endl;
-			}
+
 			std::string temp = make_temp();
 			s << "call " << $1 << ", " << temp << std::endl;
 			
-			$$.IR = s.str();
-			$$.ret_name = temp;
+			$$.IR = strdup(s.str().c_str());
+			$$.ret_name = strdup(temp.c_str());
 		}
 		;
 term-body:
 		NUMBER		{
-			$$.ret_name = $1;
+			$$.IR = strdup("");
+			char str[12];
+			sprintf(str, "%d", $1);
+			$$.ret_name = strdup(str);
 		}
-	  | var			{
-			if($1.index != (unsigned)-1) {
-				std::string temp = make_temp();
-				std::ostringstream s;
-				s << "=[] " << temp << ", " << $1.identifier << ", " << $1.index;
-				$$.IR = s.str();
-				$$.ret_name = temp;
-			} else {
-				$$.ret_name = $1.ret_name;
-			}
+	  | IDENT	{
+			$$.IR = strdup("");
+
+			string temp = symbols[$1];
+			$$.ret_name = strdup(temp.c_str());
+		}
+	  | IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET {
+			string temp = make_temp();
+
+			string func = symbols[$1];
+
+			ostringstream s;
+			s << "=[] " << temp << ", " << func << ", " << $3.ret_name << endl;
+
+			$$.IR = strdup(s.str().c_str());
+			$$.ret_name = strdup(temp.c_str());
 		}
 	  | L_PAREN expression R_PAREN {
-			$$.IR = $2.IR;
-			$$.ret_name = $2.ret_name;
+			$$.IR = strdup($2.IR);
+			$$.ret_name = strdup($2.ret_name);
 		}
 		;
-expression-block:
+function-args:
 		expression	{
-			$$.expressions.push_back($1);
+			$$.IR = strdup($1.IR);
+			$$.ret_names = strdup($1.ret_name);
 		}
-	  | expression COMMA expression-block {
-			$$.expressions = $3.expressions;
-			$$.expressions.push_back($1);
-		}
-		;
-var-block:
-		var			{
-			$$.variables.push_back(make_pair($1.identifier, $1.index));
-		}
-	  | var COMMA var-block {
-			$$.variables = $3.variables;
-			$$.variables.push_back(make_pair($1.identifier, $1.index));
-		}
-		;
-var:
-		identifier		{
-			auto pair = symbols.find($1);
-			if(pair != symbols.end()) {
-				$$.identifier = pair.second;
-			} else {
-				throw exception("invalid symbol");
-			}
-		}
-	  | identifier L_SQUARE_BRACKET expression R_SQUARE_BRACKET {
-			auto pair = symbols.find($1);
-			if(pair != symbols.end()) {
-				$$.identifier = pair.second;
-			} else {
-				throw exception("invalid symbol");
-			}
-			
-			$$.index = $3.ret_name;
+	  | expression COMMA function-args {
+			ostringstream s;
+			s << $1.IR;
+			s << $3.IR;
+			$$.IR = strdup(s.str().c_str());
+
+			ostringstream s2;
+			s2 << $1.ret_name << " " << $3.ret_names;
+			$$.ret_names = strdup(s2.str().c_str());
 		}
 		;
 %%
 
 int main(int argc, char **argv) {
    if (argc > 1) {
-      yyin = fopen(argv[1], "r");
+      FILE * yyin = fopen(argv[1], "r");
       if (yyin == NULL){
          printf("syntax: %s filename\n", argv[0]);
       }//end if

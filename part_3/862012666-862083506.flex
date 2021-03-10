@@ -82,7 +82,7 @@ not			{printf("\n");		currPos += yyleng; return NOT;}
 
 {LETTER}({ALPHA}*_+)+	{printf("Error at line %d, column %d: invalid identifier \"%s\" cannot end with an underscore\n", currLine, currPos, yytext); currPos += yyleng;}
 
-{DIGIT}*	{ /* printf("NUMBER %s\n", yytext); */ currPos += yyleng; yylval.dval = atof(yytext); return NUMBER;}
+{DIGIT}*	{ /* printf("NUMBER %s\n", yytext); */ currPos += yyleng; yylval.ival = atoi(yytext); return NUMBER;}
 
 {IDENT}		{ /* printf("IDENT(%s)\n", yytext); */ currPos += yyleng; yylval.ident = strdup(yytext); return IDENT;}
 
