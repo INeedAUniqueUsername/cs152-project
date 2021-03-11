@@ -104,7 +104,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 40 "862012666-862083506.y" /* yacc.c:1909  */
+#line 46 "862012666-862083506.y" /* yacc.c:1909  */
 
   int ival;
   char* ident;

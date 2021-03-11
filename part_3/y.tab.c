@@ -66,6 +66,12 @@
 
 
 //TO DO: FIX TEMP DECLARATIONS
+//to do: check var type matches (single vs array)
+//to do: check var exists in symbol table
+//to do: check array indexing
+//to do: check advanced programs
+//to do: syntax errors
+//to do: re-entrant error
 
 #include<stdio.h>
 #include<stdlib.h>
@@ -101,7 +107,7 @@ using namespace std;
 		return s.str();
 	}
 
-#line 105 "y.tab.c" /* yacc.c:339  */
+#line 111 "y.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -195,7 +201,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 40 "862012666-862083506.y" /* yacc.c:355  */
+#line 46 "862012666-862083506.y" /* yacc.c:355  */
 
   int ival;
   char* ident;
@@ -250,7 +256,7 @@ union YYSTYPE
 		char* IR;
 	} Program;
 
-#line 254 "y.tab.c" /* yacc.c:355  */
+#line 260 "y.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -267,7 +273,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 271 "y.tab.c" /* yacc.c:358  */
+#line 277 "y.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -509,16 +515,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  6
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   148
+#define YYLAST   157
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  54
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  24
+#define YYNNTS  25
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  68
+#define YYNRULES  71
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  144
+#define YYNSTATES  149
 
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
@@ -569,13 +575,14 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   115,   115,   119,   122,   130,   165,   168,   174,   178,
-     190,   191,   196,   199,   208,   224,   246,   249,   256,   261,
-     271,   281,   306,   336,   350,   363,   366,   369,   371,   379,
-     384,   389,   395,   403,   408,   413,   419,   427,   431,   444,
-     448,   461,   465,   478,   489,   492,   495,   502,   503,   504,
-     505,   506,   507,   510,   514,   526,   540,   544,   556,   568,
-     582,   586,   597,   616,   622,   628,   639,   645,   649
+       0,   120,   120,   124,   127,   135,   170,   173,   179,   183,
+     195,   196,   201,   204,   213,   216,   224,   229,   241,   257,
+     279,   282,   289,   294,   304,   314,   339,   369,   404,   438,
+     441,   444,   452,   457,   462,   468,   476,   481,   486,   492,
+     500,   504,   517,   521,   534,   538,   551,   562,   565,   568,
+     575,   576,   577,   578,   579,   580,   583,   587,   599,   613,
+     617,   629,   641,   655,   659,   670,   689,   695,   701,   712,
+     718,   722
 };
 #endif
 
@@ -594,10 +601,11 @@ static const char *const yytname[] =
   "NOT", "IDENT", "NUMBER", "PLUS", "MINUS", "UMINUS", "$accept",
   "program", "function-block", "function", "declaration-block-optional",
   "declaration-block", "statement-block-optional", "statement-block",
-  "declaration", "identifier-block", "identifier", "statement",
-  "read-block", "write-block", "bool-expr", "relation-and-expr",
-  "relation-expr", "relation-expr-body", "comp", "expression",
-  "multiplicative-expr", "term", "term-body", "function-args", YY_NULLPTR
+  "loop-statement-block", "declaration", "identifier-block", "identifier",
+  "statement", "read-block", "write-block", "bool-expr",
+  "relation-and-expr", "relation-expr", "relation-expr-body", "comp",
+  "expression", "multiplicative-expr", "term", "term-body",
+  "function-args", YY_NULLPTR
 };
 #endif
 
@@ -615,10 +623,10 @@ static const yytype_uint16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF -62
+#define YYPACT_NINF -69
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-62)))
+  (!!((Yystate) == (-69)))
 
 #define YYTABLE_NINF -1
 
@@ -627,23 +635,23 @@ static const yytype_uint16 yytoknum[] =
 
   /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
      STATE-NUM.  */
-static const yytype_int8 yypact[] =
+static const yytype_int16 yypact[] =
 {
-       2,   -24,    28,   -62,     2,     5,   -62,   -62,    18,     0,
-     -62,    40,   -62,    34,    35,    36,    61,     0,    -3,     0,
-       0,   -62,    42,   -62,   -62,    67,    44,    76,    54,     3,
-      83,    26,     4,    26,    88,   -62,    52,    57,    75,    82,
-     -62,    63,    80,    59,    60,    89,    26,   -62,   -62,    -2,
-     -34,   -62,    15,   104,    65,    69,   -62,    51,   -16,    56,
-     -62,     4,   -62,   102,     3,    72,    74,     4,   -62,     4,
-       3,    77,    78,   -62,    81,    -8,   -62,     4,     4,    79,
-     -62,     3,    26,    26,   -62,   -62,   -62,   -62,   -62,   -62,
-       4,     4,     4,     4,     4,     4,    84,     3,   105,     4,
-       4,   -62,    85,   -62,     4,     4,   -62,   -62,    92,    86,
-      87,    -4,   -62,   -62,   -62,   -62,   -62,   -62,   -62,   -62,
-     111,   115,    90,    91,   101,    93,    94,     4,   -62,   -62,
-       3,   -62,   -62,    26,   -62,   -62,     4,   -62,   -62,   -62,
-     121,   -62,   -62,   -62
+      12,   -23,    42,   -69,    12,    19,   -69,   -69,    33,    15,
+     -69,    49,   -69,    40,    43,    44,    79,    15,   -11,    15,
+      15,   -69,    57,   -69,   -69,    81,    51,    84,    62,    68,
+      92,     3,   -20,     3,    97,    61,    63,    86,    93,   -69,
+      71,    88,    67,    69,    98,     3,   -69,   -69,    36,    -7,
+     -69,    -9,   113,    74,    76,   -69,    64,   -29,    25,   -69,
+     -20,   -69,   112,    14,    82,    83,   -20,   -69,   -20,    68,
+      85,    87,   -69,    89,   -22,   -69,   -20,   -20,    90,   -69,
+      68,     3,     3,   -69,   -69,   -69,   -69,   -69,   -69,   -20,
+     -20,   -20,   -20,   -20,   -20,    94,    14,    99,   116,   104,
+     -20,   -20,   -69,    91,   -69,   -20,   -20,   -69,   -69,   107,
+      95,    96,    17,   -69,   -69,   -69,   -69,   -69,   -69,   -69,
+     -69,   125,    68,   129,    68,   100,   101,   115,   102,   103,
+     -20,   -69,   -69,    68,   -69,   -69,   -69,     3,   -69,   -69,
+     -69,   -20,   -69,   -69,   -69,   133,   -69,   -69,   -69
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -652,36 +660,36 @@ static const yytype_int8 yypact[] =
 static const yytype_uint8 yydefact[] =
 {
        3,     0,     0,     2,     3,     0,     1,     4,     0,     6,
-      18,     0,     7,     0,     0,    16,     0,     8,     0,     0,
-       6,     9,     0,    14,    17,     0,     0,     0,     0,    10,
-       0,     0,     0,     0,     0,    27,     0,     0,    18,     0,
-      11,     0,     0,    25,    26,     0,     0,    44,    45,     0,
-      64,    63,     0,     0,    37,    39,    41,     0,    53,    56,
-      60,     0,    28,     0,     0,    29,    33,     0,     5,     0,
-      12,    31,    35,    15,     0,     0,    42,     0,     0,    64,
-      61,     0,     0,     0,    51,    52,    49,    50,    47,    48,
+      22,     0,     7,     0,     0,    20,     0,     8,     0,     0,
+       6,     9,     0,    18,    21,     0,     0,     0,     0,    10,
+       0,     0,     0,     0,     0,     0,     0,    22,     0,    11,
+       0,     0,    29,    30,     0,     0,    47,    48,     0,    67,
+      66,     0,     0,    40,    42,    44,     0,    56,    59,    63,
+       0,    31,     0,     0,    32,    36,     0,     5,     0,    12,
+      34,    38,    19,     0,     0,    45,     0,     0,    67,    64,
+       0,     0,     0,    54,    55,    52,    53,    50,    51,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,    19,     0,    13,     0,     0,    46,    66,    67,     0,
-       0,     0,    38,    40,    43,    55,    54,    57,    58,    59,
-       0,     0,     0,     0,     0,     0,     0,     0,    62,    65,
-       0,    21,    23,     0,    30,    34,     0,    32,    36,    68,
-       0,    24,    20,    22
+       0,     0,    23,     0,    13,     0,     0,    49,    69,    70,
+       0,     0,     0,    41,    43,    46,    58,    57,    60,    61,
+      62,     0,    16,     0,    14,     0,     0,     0,     0,     0,
+       0,    65,    68,     0,    25,    27,    17,     0,    15,    33,
+      37,     0,    35,    39,    71,     0,    28,    24,    26
 };
 
   /* YYPGOTO[NTERM-NUM].  */
-static const yytype_int8 yypgoto[] =
+static const yytype_int16 yypgoto[] =
 {
-     -62,   -62,   127,   -62,   112,   118,   -62,   -61,   -62,   119,
-      68,   -62,   -62,   -62,   -31,    58,   -62,    95,   -62,   -32,
-     -54,   -62,    96,    12
+     -69,   -69,   138,   -69,   127,   131,   -69,   -68,    53,   -69,
+     132,    70,   -57,   -69,   -69,   -31,    72,   -69,   105,   -69,
+     -32,   -10,   -69,   106,    20
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     2,     3,     4,    11,    12,    39,    40,    13,    14,
-      41,    42,    43,    44,    53,    54,    55,    56,    90,    57,
-      58,    59,    60,   109
+      -1,     2,     3,     4,    11,    12,    38,    39,    98,    13,
+      14,    40,    41,    42,    43,    52,    53,    54,    55,    89,
+      56,    57,    58,    59,   110
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -689,40 +697,42 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-      62,   130,    63,    98,   131,     1,    77,    31,    78,   103,
-      32,    22,    33,    34,    75,    74,    35,    91,    92,    23,
-     111,    84,    85,    86,    87,     5,    36,    37,     6,    96,
-      88,    89,     8,   107,     9,   101,   120,   102,    46,   117,
-     118,   119,    47,    48,    61,   108,   110,    50,    51,    10,
-      52,   112,    38,    50,    51,    61,    52,    16,   114,   115,
-     116,    17,    19,    18,    79,    51,    46,   122,   123,   140,
-      47,    48,   125,   126,    49,    50,    51,    15,    52,    20,
-      84,    85,    86,    87,    26,    15,    27,    15,    15,    88,
-      89,    93,    94,    95,    28,   108,    29,    30,    45,    64,
-      67,    65,   141,    68,   142,    69,    66,    70,    71,    72,
-      81,    73,    82,    97,    99,    83,   100,   121,   127,   104,
-     105,    78,   106,   132,   133,   107,   136,   128,   124,   143,
-     129,     7,    25,   134,   135,    21,   137,   138,    24,   139,
-       0,   113,     0,     0,    76,     0,     0,     0,    80
+      61,   104,    62,    22,    90,    91,    99,    83,    84,    85,
+      86,    23,   112,    74,    73,     1,    87,    88,    31,   108,
+      60,    32,   133,    33,    34,   134,     5,    97,    95,    49,
+      50,    60,    51,    76,   102,    77,   103,    35,    36,    99,
+      78,    50,     6,    45,   109,   111,     8,    46,    47,     9,
+     113,    48,    49,    50,   136,    51,   138,   115,   116,   117,
+      92,    93,    94,    37,    10,   145,    16,    17,   125,   126,
+      19,    18,    31,   128,   129,    32,    45,    33,    34,    15,
+      46,    47,   118,   119,   120,    49,    50,    15,    51,    15,
+      15,    35,    36,    83,    84,    85,    86,    20,   109,    26,
+      27,    28,    87,    88,    29,    30,   146,    44,    63,   147,
+      64,    66,    65,    68,    67,    69,    70,    37,    71,    80,
+      72,    81,    82,    96,   100,   101,   122,   105,   123,   106,
+     107,   124,    77,   130,   127,   108,   131,   135,   137,   132,
+     141,   148,     7,   139,   140,   142,   143,    25,    21,   121,
+     144,    24,     0,    75,   114,     0,     0,    79
 };
 
 static const yytype_int16 yycheck[] =
 {
-      32,     5,    33,    64,     8,     3,    40,     4,    42,    70,
-       7,    14,     9,    10,    46,    46,    13,    33,    34,    22,
-      81,    29,    30,    31,    32,    49,    23,    24,     0,    61,
-      38,    39,    27,    41,    16,    67,    97,    69,    40,    93,
-      94,    95,    44,    45,    40,    77,    78,    49,    50,    49,
-      52,    82,    49,    49,    50,    40,    52,    17,    90,    91,
-      92,    27,    26,    28,    49,    50,    40,    99,   100,   130,
-      44,    45,   104,   105,    48,    49,    50,     9,    52,    18,
-      29,    30,    31,    32,    42,    17,    19,    19,    20,    38,
-      39,    35,    36,    37,    50,   127,    20,    43,    15,    11,
-      25,    49,   133,    21,   136,    42,    49,    27,    49,    49,
-       6,    22,    47,    11,    42,    46,    42,    12,    26,    42,
-      42,    42,    41,    12,     9,    41,    25,    41,    43,     8,
-      43,     4,    20,    43,    43,    17,    43,    43,    19,   127,
-      -1,    83,    -1,    -1,    49,    -1,    -1,    -1,    52
+      32,    69,    33,    14,    33,    34,    63,    29,    30,    31,
+      32,    22,    80,    45,    45,     3,    38,    39,     4,    41,
+      40,     7,     5,     9,    10,     8,    49,    13,    60,    49,
+      50,    40,    52,    40,    66,    42,    68,    23,    24,    96,
+      49,    50,     0,    40,    76,    77,    27,    44,    45,    16,
+      81,    48,    49,    50,   122,    52,   124,    89,    90,    91,
+      35,    36,    37,    49,    49,   133,    17,    27,   100,   101,
+      26,    28,     4,   105,   106,     7,    40,     9,    10,     9,
+      44,    45,    92,    93,    94,    49,    50,    17,    52,    19,
+      20,    23,    24,    29,    30,    31,    32,    18,   130,    42,
+      19,    50,    38,    39,    20,    43,   137,    15,    11,   141,
+      49,    25,    49,    42,    21,    27,    49,    49,    49,     6,
+      22,    47,    46,    11,    42,    42,    27,    42,    12,    42,
+      41,    27,    42,    26,    43,    41,    41,    12,     9,    43,
+      25,     8,     4,    43,    43,    43,    43,    20,    17,    96,
+     130,    19,    -1,    48,    82,    -1,    -1,    51
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -730,44 +740,46 @@ static const yytype_int16 yycheck[] =
 static const yytype_uint8 yystos[] =
 {
        0,     3,    55,    56,    57,    49,     0,    56,    27,    16,
-      49,    58,    59,    62,    63,    64,    17,    27,    28,    26,
-      18,    59,    14,    22,    63,    58,    42,    19,    50,    20,
-      43,     4,     7,     9,    10,    13,    23,    24,    49,    60,
-      61,    64,    65,    66,    67,    15,    40,    44,    45,    48,
-      49,    50,    52,    68,    69,    70,    71,    73,    74,    75,
-      76,    40,    73,    68,    11,    49,    49,    25,    21,    42,
-      27,    49,    49,    22,    68,    73,    71,    40,    42,    49,
-      76,     6,    47,    46,    29,    30,    31,    32,    38,    39,
-      72,    33,    34,    35,    36,    37,    73,    11,    61,    42,
-      42,    73,    73,    61,    42,    42,    41,    41,    73,    77,
-      73,    61,    68,    69,    73,    73,    73,    74,    74,    74,
-      61,    12,    73,    73,    43,    73,    73,    26,    41,    43,
-       5,     8,    12,     9,    43,    43,    25,    43,    43,    77,
-      61,    68,    73,     8
+      49,    58,    59,    63,    64,    65,    17,    27,    28,    26,
+      18,    59,    14,    22,    64,    58,    42,    19,    50,    20,
+      43,     4,     7,     9,    10,    23,    24,    49,    60,    61,
+      65,    66,    67,    68,    15,    40,    44,    45,    48,    49,
+      50,    52,    69,    70,    71,    72,    74,    75,    76,    77,
+      40,    74,    69,    11,    49,    49,    25,    21,    42,    27,
+      49,    49,    22,    69,    74,    72,    40,    42,    49,    77,
+       6,    47,    46,    29,    30,    31,    32,    38,    39,    73,
+      33,    34,    35,    36,    37,    74,    11,    13,    62,    66,
+      42,    42,    74,    74,    61,    42,    42,    41,    41,    74,
+      78,    74,    61,    69,    70,    74,    74,    74,    75,    75,
+      75,    62,    27,    12,    27,    74,    74,    43,    74,    74,
+      26,    41,    43,     5,     8,    12,    61,     9,    61,    43,
+      43,    25,    43,    43,    78,    61,    69,    74,     8
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
        0,    54,    55,    56,    56,    57,    58,    58,    59,    59,
-      60,    60,    61,    61,    62,    62,    63,    63,    64,    65,
-      65,    65,    65,    65,    65,    65,    65,    65,    65,    66,
-      66,    66,    66,    67,    67,    67,    67,    68,    68,    69,
-      69,    70,    70,    71,    71,    71,    71,    72,    72,    72,
-      72,    72,    72,    73,    73,    73,    74,    74,    74,    74,
-      75,    75,    75,    76,    76,    76,    76,    77,    77
+      60,    60,    61,    61,    62,    62,    62,    62,    63,    63,
+      64,    64,    65,    66,    66,    66,    66,    66,    66,    66,
+      66,    66,    67,    67,    67,    67,    68,    68,    68,    68,
+      69,    69,    70,    70,    71,    71,    72,    72,    72,    72,
+      73,    73,    73,    73,    73,    73,    74,    74,    74,    75,
+      75,    75,    75,    76,    76,    76,    77,    77,    77,    77,
+      78,    78
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
        0,     2,     1,     0,     2,    12,     0,     1,     2,     3,
-       0,     1,     2,     3,     3,     8,     1,     3,     1,     3,
-       6,     5,     7,     5,     6,     1,     1,     1,     2,     2,
-       5,     2,     5,     2,     5,     2,     5,     1,     3,     1,
-       3,     1,     2,     3,     1,     1,     3,     1,     1,     1,
-       1,     1,     1,     1,     3,     3,     1,     3,     3,     3,
-       1,     2,     4,     1,     1,     4,     3,     1,     3
+       0,     1,     2,     3,     2,     3,     2,     3,     3,     8,
+       1,     3,     1,     3,     6,     5,     7,     5,     6,     1,
+       1,     2,     2,     5,     2,     5,     2,     5,     2,     5,
+       1,     3,     1,     3,     1,     2,     3,     1,     1,     3,
+       1,     1,     1,     1,     1,     1,     1,     3,     3,     1,
+       3,     3,     3,     1,     2,     4,     1,     1,     4,     3,
+       1,     3
 };
 
 
@@ -1444,34 +1456,34 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 115 "862012666-862083506.y" /* yacc.c:1646  */
+#line 120 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			cout << (yyvsp[0].Statement).IR;
 		}
-#line 1452 "y.tab.c" /* yacc.c:1646  */
+#line 1464 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 3:
-#line 119 "862012666-862083506.y" /* yacc.c:1646  */
+#line 124 "862012666-862083506.y" /* yacc.c:1646  */
     {
 
 			  }
-#line 1460 "y.tab.c" /* yacc.c:1646  */
+#line 1472 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 122 "862012666-862083506.y" /* yacc.c:1646  */
+#line 127 "862012666-862083506.y" /* yacc.c:1646  */
     {
 				std::ostringstream s;
 				s << (yyvsp[-1].Statement).IR;
 				s << (yyvsp[0].Statement).IR;
 				(yyval.Statement).IR = strdup(s.str().c_str());
 			}
-#line 1471 "y.tab.c" /* yacc.c:1646  */
+#line 1483 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 139 "862012666-862083506.y" /* yacc.c:1646  */
+#line 144 "862012666-862083506.y" /* yacc.c:1646  */
     {
 		
 			ostringstream s;
@@ -1496,37 +1508,37 @@ yyreduce:
 			
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1500 "y.tab.c" /* yacc.c:1646  */
+#line 1512 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 165 "862012666-862083506.y" /* yacc.c:1646  */
+#line 170 "862012666-862083506.y" /* yacc.c:1646  */
     {	(yyval.DeclarationBlock).IR = strdup("");
 			(yyval.DeclarationBlock).identifiers = strdup("");
 		}
-#line 1508 "y.tab.c" /* yacc.c:1646  */
+#line 1520 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 168 "862012666-862083506.y" /* yacc.c:1646  */
+#line 173 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.DeclarationBlock).IR = strdup((yyvsp[0].DeclarationBlock).IR);
 			(yyval.DeclarationBlock).identifiers = strdup((yyvsp[0].DeclarationBlock).identifiers);
 		}
-#line 1517 "y.tab.c" /* yacc.c:1646  */
+#line 1529 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 174 "862012666-862083506.y" /* yacc.c:1646  */
+#line 179 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.DeclarationBlock).IR = strdup((yyvsp[-1].Declaration).IR);
 			(yyval.DeclarationBlock).identifiers = strdup((yyvsp[-1].Declaration).identifiers);
 		}
-#line 1526 "y.tab.c" /* yacc.c:1646  */
+#line 1538 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 178 "862012666-862083506.y" /* yacc.c:1646  */
+#line 183 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream s;
 			s << (yyvsp[-2].Declaration).IR;
@@ -1537,33 +1549,33 @@ yyreduce:
 			s2 << (yyvsp[-2].Declaration).identifiers << " " << (yyvsp[0].DeclarationBlock).identifiers;
 			(yyval.DeclarationBlock).identifiers = strdup(s2.str().c_str());
 		}
-#line 1541 "y.tab.c" /* yacc.c:1646  */
+#line 1553 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 190 "862012666-862083506.y" /* yacc.c:1646  */
+#line 195 "862012666-862083506.y" /* yacc.c:1646  */
     {	(yyval.Statement).IR = strdup(""); }
-#line 1547 "y.tab.c" /* yacc.c:1646  */
+#line 1559 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 191 "862012666-862083506.y" /* yacc.c:1646  */
+#line 196 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Statement).IR = strdup((yyvsp[0].Statement).IR);
 		}
-#line 1555 "y.tab.c" /* yacc.c:1646  */
+#line 1567 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 196 "862012666-862083506.y" /* yacc.c:1646  */
+#line 201 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Statement).IR = strdup((yyvsp[-1].Statement).IR);
 		}
-#line 1563 "y.tab.c" /* yacc.c:1646  */
+#line 1575 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 199 "862012666-862083506.y" /* yacc.c:1646  */
+#line 204 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream s;
 			s << (yyvsp[-2].Statement).IR;
@@ -1571,11 +1583,53 @@ yyreduce:
 
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1575 "y.tab.c" /* yacc.c:1646  */
+#line 1587 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 208 "862012666-862083506.y" /* yacc.c:1646  */
+#line 213 "862012666-862083506.y" /* yacc.c:1646  */
+    {
+			(yyval.Statement).IR = strdup((yyvsp[-1].Statement).IR);
+		}
+#line 1595 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 15:
+#line 216 "862012666-862083506.y" /* yacc.c:1646  */
+    {
+			ostringstream s;
+			s << (yyvsp[-2].Statement).IR;
+			s << (yyvsp[0].Statement).IR;
+
+			(yyval.Statement).IR = strdup(s.str().c_str());
+		}
+#line 1607 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 16:
+#line 224 "862012666-862083506.y" /* yacc.c:1646  */
+    {
+			ostringstream s;
+			s << "__BREAK__" << endl;
+			(yyval.Statement).IR = strdup(s.str().c_str());
+		}
+#line 1617 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 17:
+#line 229 "862012666-862083506.y" /* yacc.c:1646  */
+    {
+			ostringstream s;
+			s << "__BREAK__" << endl;
+			s << (yyvsp[0].Statement).IR;
+
+			(yyval.Statement).IR = strdup(s.str().c_str());
+		}
+#line 1629 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 18:
+#line 241 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream o;
 			ostringstream o2;
@@ -1592,11 +1646,11 @@ yyreduce:
 			(yyval.Declaration).IR = strdup(o.str().c_str());
 			(yyval.Declaration).identifiers = strdup(o2.str().c_str());
 		}
-#line 1596 "y.tab.c" /* yacc.c:1646  */
+#line 1650 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 15:
-#line 224 "862012666-862083506.y" /* yacc.c:1646  */
+  case 19:
+#line 257 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream o;
 			ostringstream o2;
@@ -1616,37 +1670,37 @@ yyreduce:
 			(yyval.Declaration).IR = strdup(o.str().c_str());
 			(yyval.Declaration).identifiers = strdup(o2.str().c_str());
 		}
-#line 1620 "y.tab.c" /* yacc.c:1646  */
+#line 1674 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 16:
-#line 246 "862012666-862083506.y" /* yacc.c:1646  */
+  case 20:
+#line 279 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.IdentifierBlock).identifiers = strdup((yyvsp[0].Identifier).identifier);
 		}
-#line 1628 "y.tab.c" /* yacc.c:1646  */
+#line 1682 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 17:
-#line 249 "862012666-862083506.y" /* yacc.c:1646  */
+  case 21:
+#line 282 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream s;
 			s << (yyvsp[-2].Identifier).identifier << " " << (yyvsp[0].IdentifierBlock).identifiers;
 			(yyval.IdentifierBlock).identifiers = strdup(s.str().c_str());
 		}
-#line 1638 "y.tab.c" /* yacc.c:1646  */
+#line 1692 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 18:
-#line 256 "862012666-862083506.y" /* yacc.c:1646  */
+  case 22:
+#line 289 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Identifier).identifier = (yyvsp[0].ident);
 		}
-#line 1646 "y.tab.c" /* yacc.c:1646  */
+#line 1700 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 19:
-#line 261 "862012666-862083506.y" /* yacc.c:1646  */
+  case 23:
+#line 294 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			//std::string temp = lookup($1.identifier);
 			string temp = symbols[(yyvsp[-2].ident)];
@@ -1657,11 +1711,11 @@ yyreduce:
 
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1661 "y.tab.c" /* yacc.c:1646  */
+#line 1715 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 20:
-#line 271 "862012666-862083506.y" /* yacc.c:1646  */
+  case 24:
+#line 304 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			//Lookup from symbol table
 			//std::string temp = lookup($1.identifier);
@@ -1672,11 +1726,11 @@ yyreduce:
 
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1676 "y.tab.c" /* yacc.c:1646  */
+#line 1730 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 21:
-#line 281 "862012666-862083506.y" /* yacc.c:1646  */
+  case 25:
+#line 314 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			//TO DO: Make sure $ entries are properly indexed
 			//Remove $0
@@ -1702,11 +1756,11 @@ yyreduce:
 			
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1706 "y.tab.c" /* yacc.c:1646  */
+#line 1760 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 22:
-#line 306 "862012666-862083506.y" /* yacc.c:1646  */
+  case 26:
+#line 339 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			std::string label0 = make_label();
 			std::string label1 = make_label();
@@ -1737,175 +1791,210 @@ yyreduce:
 			(yyval.Statement).IR = strdup(s.str().c_str());
 			
 		}
-#line 1741 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 23:
-#line 336 "862012666-862083506.y" /* yacc.c:1646  */
-    {
-			std::string label_body = make_label();
-			std::string label_condition = make_label();
-			
-			std::ostringstream s;
-			s << ":= " << label_condition << std::endl;
-			s << ": " << label_body << std::endl; 
-			s << (yyvsp[-1].Statement).IR << std::endl;
-			s << ": " << label_condition << std::endl;
-			s << (yyvsp[-3].Expression).IR << std::endl;
-			s << "?:= " << label_body << (yyvsp[-3].Expression).ret_name << std::endl;
-			
-			(yyval.Statement).IR = strdup(s.str().c_str());
-		}
-#line 1760 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 24:
-#line 350 "862012666-862083506.y" /* yacc.c:1646  */
-    {
-			std::string label_body = make_label();
-			std::string label_condition = make_label();
-			
-			std::ostringstream s;
-			s << ": " << label_body << std::endl; 
-			s << (yyvsp[-3].Statement).IR << std::endl;
-			s << ": " << label_condition << std::endl;
-			s << (yyvsp[0].Expression).IR << std::endl;
-			s << "?:= " << label_body << (yyvsp[0].Expression).ret_name << std::endl;
-			
-			(yyval.Statement).IR = strdup(s.str().c_str());
-		}
-#line 1778 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 25:
-#line 363 "862012666-862083506.y" /* yacc.c:1646  */
-    {
-			(yyval.Statement).IR = strdup((yyvsp[0].Statement).IR);
-		}
-#line 1786 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 26:
-#line 366 "862012666-862083506.y" /* yacc.c:1646  */
-    {
-			(yyval.Statement).IR = strdup((yyvsp[0].Statement).IR);
-		}
-#line 1794 "y.tab.c" /* yacc.c:1646  */
+#line 1795 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
 #line 369 "862012666-862083506.y" /* yacc.c:1646  */
     {
+			string label_body = make_label();
+			string label_condition = make_label();
+			string label_end = make_label();
+
+			std::ostringstream s;
+			//Jump to condition
+			s << ":= " << label_condition << endl;
+			
+			//Body
+			s << ": " << label_body << endl; 
+
+			//Body replace Breaks
+			string line;
+			istringstream body((yyvsp[-1].Statement).IR);
+			while(getline(body, line)) {
+				if(line == "__BREAK__") {
+					s << ":= " << label_end << endl;
+				} else {
+					s << line << endl;
+				}
+			}
+
+			//Check condition
+			s << ": " << label_condition << endl;
+			s << (yyvsp[-3].Expression).IR << endl;
+
+			//Jump to body
+			s << "?:= " << label_body << (yyvsp[-3].Expression).ret_name << endl;
+
+			//End
+			s << ": " << label_end << endl;
+
+			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1801 "y.tab.c" /* yacc.c:1646  */
+#line 1835 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 371 "862012666-862083506.y" /* yacc.c:1646  */
+#line 404 "862012666-862083506.y" /* yacc.c:1646  */
+    {
+			std::string label_body = make_label();
+			std::string label_condition = make_label();
+			string label_end = make_label();
+			
+			std::ostringstream s;
+
+			//Body
+			s << ": " << label_body << std::endl; 
+			
+			//Body replace Breaks
+			string line;
+			istringstream body((yyvsp[-3].Statement).IR);
+			while(getline(body, line)) {
+				if(line == "__BREAK__") {
+					s << ":= " << label_end << endl;
+				} else {
+					s << line << endl;
+				}
+			}
+			
+			//Condition
+			s << ": " << label_condition << std::endl;
+			s << (yyvsp[0].Expression).IR << std::endl;
+
+			//Jump to body
+			s << "?:= " << label_body << (yyvsp[0].Expression).ret_name << std::endl;
+
+			//End
+			s << ": " << label_end << endl;
+
+			
+			(yyval.Statement).IR = strdup(s.str().c_str());
+		}
+#line 1874 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 29:
+#line 438 "862012666-862083506.y" /* yacc.c:1646  */
+    {
+			(yyval.Statement).IR = strdup((yyvsp[0].Statement).IR);
+		}
+#line 1882 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 30:
+#line 441 "862012666-862083506.y" /* yacc.c:1646  */
+    {
+			(yyval.Statement).IR = strdup((yyvsp[0].Statement).IR);
+		}
+#line 1890 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 31:
+#line 444 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream s;
 			s << (yyvsp[0].Expression).IR;
 			s << "ret " << (yyvsp[0].Expression).ret_name << endl;
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1812 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 29:
-#line 379 "862012666-862083506.y" /* yacc.c:1646  */
-    {
-			ostringstream s;
-			s << ".< " << symbols[(yyvsp[0].ident)] << endl;
-			(yyval.Statement).IR = strdup(s.str().c_str());
-		}
-#line 1822 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 30:
-#line 384 "862012666-862083506.y" /* yacc.c:1646  */
-    {
-			ostringstream s;
-			s << ".< " << symbols[(yyvsp[-3].ident)] << ", " << (yyvsp[-1].Expression).ret_name << endl;
-			(yyval.Statement).IR = strdup(s.str().c_str());
-		}
-#line 1832 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 31:
-#line 389 "862012666-862083506.y" /* yacc.c:1646  */
-    {
-			ostringstream s;
-			s << (yyvsp[-1].Statement).IR;
-			s << ".< " << symbols[(yyvsp[0].ident)] << endl;
-			(yyval.Statement).IR = strdup(s.str().c_str());
-		}
-#line 1843 "y.tab.c" /* yacc.c:1646  */
+#line 1901 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 395 "862012666-862083506.y" /* yacc.c:1646  */
+#line 452 "862012666-862083506.y" /* yacc.c:1646  */
+    {
+			ostringstream s;
+			s << ".< " << symbols[(yyvsp[0].ident)] << endl;
+			(yyval.Statement).IR = strdup(s.str().c_str());
+		}
+#line 1911 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 33:
+#line 457 "862012666-862083506.y" /* yacc.c:1646  */
+    {
+			ostringstream s;
+			s << ".< " << symbols[(yyvsp[-3].ident)] << ", " << (yyvsp[-1].Expression).ret_name << endl;
+			(yyval.Statement).IR = strdup(s.str().c_str());
+		}
+#line 1921 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 34:
+#line 462 "862012666-862083506.y" /* yacc.c:1646  */
+    {
+			ostringstream s;
+			s << (yyvsp[-1].Statement).IR;
+			s << ".< " << symbols[(yyvsp[0].ident)] << endl;
+			(yyval.Statement).IR = strdup(s.str().c_str());
+		}
+#line 1932 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 35:
+#line 468 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream s;
 			s << (yyvsp[-4].Statement).IR;
 			s << ".< " << symbols[(yyvsp[-3].ident)] << ", " << (yyvsp[-1].Expression).ret_name << endl;
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1854 "y.tab.c" /* yacc.c:1646  */
+#line 1943 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 33:
-#line 403 "862012666-862083506.y" /* yacc.c:1646  */
+  case 36:
+#line 476 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream s;
 			s << ".> " << symbols[(yyvsp[0].ident)] << endl;
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1864 "y.tab.c" /* yacc.c:1646  */
+#line 1953 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 34:
-#line 408 "862012666-862083506.y" /* yacc.c:1646  */
+  case 37:
+#line 481 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream s;
 			s << ".> " << symbols[(yyvsp[-3].ident)] << ", " << (yyvsp[-1].Expression).ret_name << endl;
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1874 "y.tab.c" /* yacc.c:1646  */
+#line 1963 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 35:
-#line 413 "862012666-862083506.y" /* yacc.c:1646  */
+  case 38:
+#line 486 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream s;
 			s << (yyvsp[-1].Statement).IR;
 			s << ".> " << symbols[(yyvsp[0].ident)] << endl;
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1885 "y.tab.c" /* yacc.c:1646  */
+#line 1974 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 36:
-#line 419 "862012666-862083506.y" /* yacc.c:1646  */
+  case 39:
+#line 492 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream s;
 			s << (yyvsp[-4].Statement).IR;
 			s << ".> " << symbols[(yyvsp[-3].ident)] << ", " << (yyvsp[-1].Expression).ret_name << endl;
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1896 "y.tab.c" /* yacc.c:1646  */
+#line 1985 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 37:
-#line 427 "862012666-862083506.y" /* yacc.c:1646  */
+  case 40:
+#line 500 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Expression).IR = (yyvsp[0].Expression).IR;
 			(yyval.Expression).ret_name = strdup((yyvsp[0].Expression).ret_name);
 		}
-#line 1905 "y.tab.c" /* yacc.c:1646  */
+#line 1994 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 38:
-#line 431 "862012666-862083506.y" /* yacc.c:1646  */
+  case 41:
+#line 504 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream s;
 			s << (yyvsp[-2].Expression).IR;
@@ -1917,20 +2006,20 @@ yyreduce:
 			(yyval.Expression).IR = strdup(s.str().c_str());
 			(yyval.Expression).ret_name = strdup(temp.c_str());
 		}
-#line 1921 "y.tab.c" /* yacc.c:1646  */
+#line 2010 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 39:
-#line 444 "862012666-862083506.y" /* yacc.c:1646  */
+  case 42:
+#line 517 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Expression).IR = (yyvsp[0].Expression).IR;
 			(yyval.Expression).ret_name = strdup((yyvsp[0].Expression).ret_name);
 		}
-#line 1930 "y.tab.c" /* yacc.c:1646  */
+#line 2019 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 40:
-#line 448 "862012666-862083506.y" /* yacc.c:1646  */
+  case 43:
+#line 521 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			std::ostringstream s;
 			s << (yyvsp[-2].Expression).IR;
@@ -1942,20 +2031,20 @@ yyreduce:
 			(yyval.Expression).IR = strdup(s.str().c_str());
 			(yyval.Expression).ret_name = strdup(temp.c_str());
 		}
-#line 1946 "y.tab.c" /* yacc.c:1646  */
+#line 2035 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 41:
-#line 461 "862012666-862083506.y" /* yacc.c:1646  */
+  case 44:
+#line 534 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Expression).IR = (yyvsp[0].Expression).IR;
 			(yyval.Expression).ret_name = strdup((yyvsp[0].Expression).ret_name);
 		}
-#line 1955 "y.tab.c" /* yacc.c:1646  */
+#line 2044 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 42:
-#line 465 "862012666-862083506.y" /* yacc.c:1646  */
+  case 45:
+#line 538 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			std::ostringstream s;
 			
@@ -1967,11 +2056,11 @@ yyreduce:
 			(yyval.Expression).IR = strdup(s.str().c_str());
 			(yyval.Expression).ret_name = strdup(temp.c_str());
 	  }
-#line 1971 "y.tab.c" /* yacc.c:1646  */
+#line 2060 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 43:
-#line 478 "862012666-862083506.y" /* yacc.c:1646  */
+  case 46:
+#line 551 "862012666-862083506.y" /* yacc.c:1646  */
     {
 		
 			std::ostringstream s;
@@ -1983,81 +2072,81 @@ yyreduce:
 			(yyval.Expression).IR = strdup(s.str().c_str());
 			(yyval.Expression).ret_name = strdup(temp.c_str());
 		}
-#line 1987 "y.tab.c" /* yacc.c:1646  */
+#line 2076 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 44:
-#line 489 "862012666-862083506.y" /* yacc.c:1646  */
+  case 47:
+#line 562 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Expression).ret_name = strdup("true");
 		}
-#line 1995 "y.tab.c" /* yacc.c:1646  */
+#line 2084 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 45:
-#line 492 "862012666-862083506.y" /* yacc.c:1646  */
+  case 48:
+#line 565 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Expression).ret_name = strdup("false");
 		}
-#line 2003 "y.tab.c" /* yacc.c:1646  */
+#line 2092 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 46:
-#line 495 "862012666-862083506.y" /* yacc.c:1646  */
+  case 49:
+#line 568 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Expression).IR = strdup((yyvsp[-1].Expression).IR);
 			(yyval.Expression).ret_name = strdup((yyvsp[-1].Expression).ret_name);
 		}
-#line 2012 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 47:
-#line 502 "862012666-862083506.y" /* yacc.c:1646  */
-    { (yyval.Operator).op = strdup("=="); }
-#line 2018 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 48:
-#line 503 "862012666-862083506.y" /* yacc.c:1646  */
-    { (yyval.Operator).op = strdup("!="); }
-#line 2024 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 49:
-#line 504 "862012666-862083506.y" /* yacc.c:1646  */
-    { (yyval.Operator).op = strdup("<"); }
-#line 2030 "y.tab.c" /* yacc.c:1646  */
+#line 2101 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 50:
-#line 505 "862012666-862083506.y" /* yacc.c:1646  */
-    { (yyval.Operator).op = strdup(">"); }
-#line 2036 "y.tab.c" /* yacc.c:1646  */
+#line 575 "862012666-862083506.y" /* yacc.c:1646  */
+    { (yyval.Operator).op = strdup("=="); }
+#line 2107 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 51:
-#line 506 "862012666-862083506.y" /* yacc.c:1646  */
-    { (yyval.Operator).op = strdup("<="); }
-#line 2042 "y.tab.c" /* yacc.c:1646  */
+#line 576 "862012666-862083506.y" /* yacc.c:1646  */
+    { (yyval.Operator).op = strdup("!="); }
+#line 2113 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 52:
-#line 507 "862012666-862083506.y" /* yacc.c:1646  */
-    { (yyval.Operator).op = strdup(">="); }
-#line 2048 "y.tab.c" /* yacc.c:1646  */
+#line 577 "862012666-862083506.y" /* yacc.c:1646  */
+    { (yyval.Operator).op = strdup("<"); }
+#line 2119 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 53:
-#line 510 "862012666-862083506.y" /* yacc.c:1646  */
+#line 578 "862012666-862083506.y" /* yacc.c:1646  */
+    { (yyval.Operator).op = strdup(">"); }
+#line 2125 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 54:
+#line 579 "862012666-862083506.y" /* yacc.c:1646  */
+    { (yyval.Operator).op = strdup("<="); }
+#line 2131 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 55:
+#line 580 "862012666-862083506.y" /* yacc.c:1646  */
+    { (yyval.Operator).op = strdup(">="); }
+#line 2137 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 56:
+#line 583 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Expression).IR = strdup((yyvsp[0].Expression).IR);
 			(yyval.Expression).ret_name = strdup((yyvsp[0].Expression).ret_name);
 		}
-#line 2057 "y.tab.c" /* yacc.c:1646  */
+#line 2146 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 54:
-#line 514 "862012666-862083506.y" /* yacc.c:1646  */
+  case 57:
+#line 587 "862012666-862083506.y" /* yacc.c:1646  */
     { 
 			std::ostringstream s;
 			s << (yyvsp[-2].Expression).IR;
@@ -2070,11 +2159,11 @@ yyreduce:
 			(yyval.Expression).IR = strdup(s.str().c_str());
 			(yyval.Expression).ret_name = strdup(temp.c_str());
 		}
-#line 2074 "y.tab.c" /* yacc.c:1646  */
+#line 2163 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 55:
-#line 526 "862012666-862083506.y" /* yacc.c:1646  */
+  case 58:
+#line 599 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			std::ostringstream s;
 			s << (yyvsp[-2].Expression).IR;
@@ -2087,20 +2176,20 @@ yyreduce:
 			(yyval.Expression).IR = strdup(s.str().c_str());
 			(yyval.Expression).ret_name = strdup(temp.c_str());
 		}
-#line 2091 "y.tab.c" /* yacc.c:1646  */
+#line 2180 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 56:
-#line 540 "862012666-862083506.y" /* yacc.c:1646  */
+  case 59:
+#line 613 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Expression).IR = strdup((yyvsp[0].Expression).IR);
 			(yyval.Expression).ret_name = strdup((yyvsp[0].Expression).ret_name);
 		}
-#line 2100 "y.tab.c" /* yacc.c:1646  */
+#line 2189 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 57:
-#line 544 "862012666-862083506.y" /* yacc.c:1646  */
+  case 60:
+#line 617 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			std::ostringstream s;
 			s << (yyvsp[-2].Expression).IR;
@@ -2113,11 +2202,11 @@ yyreduce:
 			(yyval.Expression).IR = strdup(s.str().c_str());
 			(yyval.Expression).ret_name = strdup(temp.c_str());
 		}
-#line 2117 "y.tab.c" /* yacc.c:1646  */
+#line 2206 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 58:
-#line 556 "862012666-862083506.y" /* yacc.c:1646  */
+  case 61:
+#line 629 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			std::ostringstream s;
 			s << (yyvsp[-2].Expression).IR;
@@ -2130,11 +2219,11 @@ yyreduce:
 			(yyval.Expression).IR = strdup(s.str().c_str());
 			(yyval.Expression).ret_name = strdup(temp.c_str());
 		}
-#line 2134 "y.tab.c" /* yacc.c:1646  */
+#line 2223 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 59:
-#line 568 "862012666-862083506.y" /* yacc.c:1646  */
+  case 62:
+#line 641 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			std::ostringstream s;
 			s << (yyvsp[-2].Expression).IR;
@@ -2147,20 +2236,20 @@ yyreduce:
 			(yyval.Expression).IR = strdup(s.str().c_str());
 			(yyval.Expression).ret_name = strdup(temp.c_str());
 		}
-#line 2151 "y.tab.c" /* yacc.c:1646  */
+#line 2240 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 60:
-#line 582 "862012666-862083506.y" /* yacc.c:1646  */
+  case 63:
+#line 655 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Expression).IR = strdup((yyvsp[0].Expression).IR);
 			(yyval.Expression).ret_name = strdup((yyvsp[0].Expression).ret_name);
 		}
-#line 2160 "y.tab.c" /* yacc.c:1646  */
+#line 2249 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 61:
-#line 586 "862012666-862083506.y" /* yacc.c:1646  */
+  case 64:
+#line 659 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			std::string temp = make_temp();
 			
@@ -2172,11 +2261,11 @@ yyreduce:
 			(yyval.Expression).IR = strdup(s.str().c_str());
 			(yyval.Expression).ret_name = strdup(temp.c_str());
 		}
-#line 2176 "y.tab.c" /* yacc.c:1646  */
+#line 2265 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 62:
-#line 597 "862012666-862083506.y" /* yacc.c:1646  */
+  case 65:
+#line 670 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			std::ostringstream s;
 			s << (yyvsp[-1].FunctionArgs).IR;
@@ -2194,33 +2283,33 @@ yyreduce:
 			(yyval.Expression).IR = strdup(s.str().c_str());
 			(yyval.Expression).ret_name = strdup(temp.c_str());
 		}
-#line 2198 "y.tab.c" /* yacc.c:1646  */
+#line 2287 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 63:
-#line 616 "862012666-862083506.y" /* yacc.c:1646  */
+  case 66:
+#line 689 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Expression).IR = strdup("");
 			char str[12];
 			sprintf(str, "%d", (yyvsp[0].ival));
 			(yyval.Expression).ret_name = strdup(str);
 		}
-#line 2209 "y.tab.c" /* yacc.c:1646  */
+#line 2298 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 64:
-#line 622 "862012666-862083506.y" /* yacc.c:1646  */
+  case 67:
+#line 695 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Expression).IR = strdup("");
 
 			string temp = symbols[(yyvsp[0].ident)];
 			(yyval.Expression).ret_name = strdup(temp.c_str());
 		}
-#line 2220 "y.tab.c" /* yacc.c:1646  */
+#line 2309 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 65:
-#line 628 "862012666-862083506.y" /* yacc.c:1646  */
+  case 68:
+#line 701 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			string temp = make_temp();
 
@@ -2232,29 +2321,29 @@ yyreduce:
 			(yyval.Expression).IR = strdup(s.str().c_str());
 			(yyval.Expression).ret_name = strdup(temp.c_str());
 		}
-#line 2236 "y.tab.c" /* yacc.c:1646  */
+#line 2325 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 66:
-#line 639 "862012666-862083506.y" /* yacc.c:1646  */
+  case 69:
+#line 712 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Expression).IR = strdup((yyvsp[-1].Expression).IR);
 			(yyval.Expression).ret_name = strdup((yyvsp[-1].Expression).ret_name);
 		}
-#line 2245 "y.tab.c" /* yacc.c:1646  */
+#line 2334 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 67:
-#line 645 "862012666-862083506.y" /* yacc.c:1646  */
+  case 70:
+#line 718 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.FunctionArgs).IR = strdup((yyvsp[0].Expression).IR);
 			(yyval.FunctionArgs).ret_names = strdup((yyvsp[0].Expression).ret_name);
 		}
-#line 2254 "y.tab.c" /* yacc.c:1646  */
+#line 2343 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 68:
-#line 649 "862012666-862083506.y" /* yacc.c:1646  */
+  case 71:
+#line 722 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream s;
 			s << (yyvsp[-2].Expression).IR;
@@ -2265,11 +2354,11 @@ yyreduce:
 			s2 << (yyvsp[-2].Expression).ret_name << " " << (yyvsp[0].FunctionArgs).ret_names;
 			(yyval.FunctionArgs).ret_names = strdup(s2.str().c_str());
 		}
-#line 2269 "y.tab.c" /* yacc.c:1646  */
+#line 2358 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 2273 "y.tab.c" /* yacc.c:1646  */
+#line 2362 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2497,7 +2586,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 660 "862012666-862083506.y" /* yacc.c:1906  */
+#line 733 "862012666-862083506.y" /* yacc.c:1906  */
 
 
 int main(int argc, char **argv) {
