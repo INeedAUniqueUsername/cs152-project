@@ -93,7 +93,7 @@ using namespace std;
 		char* op;
 	} Operator;
 	
-	struct {
+	struct { 
 		char* IR;
 	} Program;
 }
@@ -322,13 +322,13 @@ statement:
 			//Condition
 			s << $2.IR;
 			//Jump into branch
-			s << "?:=" << label0 << ", " << $2.ret_name << std::endl;
+			s << "?:= " << label0 << ", " << $2.ret_name << std::endl;
 			
 			//Skip branch
 			s << ":= " << label1 << std::endl;
 
 			//Branch
-			s << ":" << label0 << std::endl;
+			s << ": " << label0 << std::endl;
 			s << $4.IR;
 			
 			//Finally
@@ -351,7 +351,7 @@ statement:
 			s << ":= " << label1 << std::endl;
 			
 			//Branch
-			s << ":" << label0 << std::endl;
+			s << ": " << label0 << std::endl;
 			s << $4.IR;
 			
 			//Jump to finally
