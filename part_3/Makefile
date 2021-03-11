@@ -9,3 +9,9 @@ parser: 862012666-862083506.y
 	bison -v -d --file-prefix=y 862012666-862083506.y
 	flex 862012666-862083506.flex;
 	g++ -o parser y.tab.c lex.yy.c -lfl
+	
+clean:
+	rm parser;
+	rm y.tab.c;
+	rm y.tab.h;
+	rm lex.yy.c;

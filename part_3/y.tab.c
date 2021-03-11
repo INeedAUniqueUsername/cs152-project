@@ -70,6 +70,7 @@
 //to do: check var exists in symbol table
 //to do: check array indexing
 //to do: check advanced programs
+//to do: check array size
 //to do: syntax errors
 //to do: re-entrant error
 
@@ -107,7 +108,7 @@ using namespace std;
 		return s.str();
 	}
 
-#line 111 "y.tab.c" /* yacc.c:339  */
+#line 112 "y.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -201,7 +202,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 46 "862012666-862083506.y" /* yacc.c:355  */
+#line 47 "862012666-862083506.y" /* yacc.c:355  */
 
   int ival;
   char* ident;
@@ -252,11 +253,11 @@ union YYSTYPE
 		char* op;
 	} Operator;
 	
-	struct {
+	struct { 
 		char* IR;
 	} Program;
 
-#line 260 "y.tab.c" /* yacc.c:355  */
+#line 261 "y.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -273,7 +274,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 277 "y.tab.c" /* yacc.c:358  */
+#line 278 "y.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -575,14 +576,14 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   120,   120,   124,   127,   135,   170,   173,   179,   183,
-     195,   196,   201,   204,   213,   216,   224,   229,   241,   257,
-     279,   282,   289,   294,   304,   314,   339,   369,   404,   438,
-     441,   444,   452,   457,   462,   468,   476,   481,   486,   492,
-     500,   504,   517,   521,   534,   538,   551,   562,   565,   568,
-     575,   576,   577,   578,   579,   580,   583,   587,   599,   613,
-     617,   629,   641,   655,   659,   670,   689,   695,   701,   712,
-     718,   722
+       0,   121,   121,   125,   128,   136,   171,   174,   180,   184,
+     196,   197,   202,   205,   214,   217,   225,   230,   242,   258,
+     280,   283,   290,   295,   305,   315,   340,   370,   405,   439,
+     442,   445,   453,   458,   463,   469,   477,   482,   487,   493,
+     501,   505,   518,   522,   535,   539,   552,   563,   566,   569,
+     576,   577,   578,   579,   580,   581,   584,   588,   600,   614,
+     618,   630,   642,   656,   660,   671,   690,   696,   702,   713,
+     719,   723
 };
 #endif
 
@@ -1456,34 +1457,34 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 120 "862012666-862083506.y" /* yacc.c:1646  */
+#line 121 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			cout << (yyvsp[0].Statement).IR;
 		}
-#line 1464 "y.tab.c" /* yacc.c:1646  */
+#line 1465 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 3:
-#line 124 "862012666-862083506.y" /* yacc.c:1646  */
+#line 125 "862012666-862083506.y" /* yacc.c:1646  */
     {
 
 			  }
-#line 1472 "y.tab.c" /* yacc.c:1646  */
+#line 1473 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 127 "862012666-862083506.y" /* yacc.c:1646  */
+#line 128 "862012666-862083506.y" /* yacc.c:1646  */
     {
 				std::ostringstream s;
 				s << (yyvsp[-1].Statement).IR;
 				s << (yyvsp[0].Statement).IR;
 				(yyval.Statement).IR = strdup(s.str().c_str());
 			}
-#line 1483 "y.tab.c" /* yacc.c:1646  */
+#line 1484 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 144 "862012666-862083506.y" /* yacc.c:1646  */
+#line 145 "862012666-862083506.y" /* yacc.c:1646  */
     {
 		
 			ostringstream s;
@@ -1495,7 +1496,7 @@ yyreduce:
 			string identifier;
 			int count = 0;
 			while(i >> identifier) {
-				s << "= " << identifier << " $" << count << endl;
+				s << "= " << identifier << ", $" << count << endl;
 				count++;
 			}
 
@@ -1508,37 +1509,37 @@ yyreduce:
 			
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1512 "y.tab.c" /* yacc.c:1646  */
+#line 1513 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 170 "862012666-862083506.y" /* yacc.c:1646  */
+#line 171 "862012666-862083506.y" /* yacc.c:1646  */
     {	(yyval.DeclarationBlock).IR = strdup("");
 			(yyval.DeclarationBlock).identifiers = strdup("");
 		}
-#line 1520 "y.tab.c" /* yacc.c:1646  */
+#line 1521 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 173 "862012666-862083506.y" /* yacc.c:1646  */
+#line 174 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.DeclarationBlock).IR = strdup((yyvsp[0].DeclarationBlock).IR);
 			(yyval.DeclarationBlock).identifiers = strdup((yyvsp[0].DeclarationBlock).identifiers);
 		}
-#line 1529 "y.tab.c" /* yacc.c:1646  */
+#line 1530 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 179 "862012666-862083506.y" /* yacc.c:1646  */
+#line 180 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.DeclarationBlock).IR = strdup((yyvsp[-1].Declaration).IR);
 			(yyval.DeclarationBlock).identifiers = strdup((yyvsp[-1].Declaration).identifiers);
 		}
-#line 1538 "y.tab.c" /* yacc.c:1646  */
+#line 1539 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 183 "862012666-862083506.y" /* yacc.c:1646  */
+#line 184 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream s;
 			s << (yyvsp[-2].Declaration).IR;
@@ -1549,33 +1550,33 @@ yyreduce:
 			s2 << (yyvsp[-2].Declaration).identifiers << " " << (yyvsp[0].DeclarationBlock).identifiers;
 			(yyval.DeclarationBlock).identifiers = strdup(s2.str().c_str());
 		}
-#line 1553 "y.tab.c" /* yacc.c:1646  */
+#line 1554 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 195 "862012666-862083506.y" /* yacc.c:1646  */
+#line 196 "862012666-862083506.y" /* yacc.c:1646  */
     {	(yyval.Statement).IR = strdup(""); }
-#line 1559 "y.tab.c" /* yacc.c:1646  */
+#line 1560 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 196 "862012666-862083506.y" /* yacc.c:1646  */
+#line 197 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Statement).IR = strdup((yyvsp[0].Statement).IR);
 		}
-#line 1567 "y.tab.c" /* yacc.c:1646  */
+#line 1568 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 201 "862012666-862083506.y" /* yacc.c:1646  */
+#line 202 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Statement).IR = strdup((yyvsp[-1].Statement).IR);
 		}
-#line 1575 "y.tab.c" /* yacc.c:1646  */
+#line 1576 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 204 "862012666-862083506.y" /* yacc.c:1646  */
+#line 205 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream s;
 			s << (yyvsp[-2].Statement).IR;
@@ -1583,19 +1584,19 @@ yyreduce:
 
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1587 "y.tab.c" /* yacc.c:1646  */
+#line 1588 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 213 "862012666-862083506.y" /* yacc.c:1646  */
+#line 214 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Statement).IR = strdup((yyvsp[-1].Statement).IR);
 		}
-#line 1595 "y.tab.c" /* yacc.c:1646  */
+#line 1596 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 216 "862012666-862083506.y" /* yacc.c:1646  */
+#line 217 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream s;
 			s << (yyvsp[-2].Statement).IR;
@@ -1603,21 +1604,21 @@ yyreduce:
 
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1607 "y.tab.c" /* yacc.c:1646  */
+#line 1608 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 224 "862012666-862083506.y" /* yacc.c:1646  */
+#line 225 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream s;
 			s << "__BREAK__" << endl;
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1617 "y.tab.c" /* yacc.c:1646  */
+#line 1618 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 229 "862012666-862083506.y" /* yacc.c:1646  */
+#line 230 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream s;
 			s << "__BREAK__" << endl;
@@ -1625,11 +1626,11 @@ yyreduce:
 
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1629 "y.tab.c" /* yacc.c:1646  */
+#line 1630 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 241 "862012666-862083506.y" /* yacc.c:1646  */
+#line 242 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream o;
 			ostringstream o2;
@@ -1646,11 +1647,11 @@ yyreduce:
 			(yyval.Declaration).IR = strdup(o.str().c_str());
 			(yyval.Declaration).identifiers = strdup(o2.str().c_str());
 		}
-#line 1650 "y.tab.c" /* yacc.c:1646  */
+#line 1651 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 257 "862012666-862083506.y" /* yacc.c:1646  */
+#line 258 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream o;
 			ostringstream o2;
@@ -1670,37 +1671,37 @@ yyreduce:
 			(yyval.Declaration).IR = strdup(o.str().c_str());
 			(yyval.Declaration).identifiers = strdup(o2.str().c_str());
 		}
-#line 1674 "y.tab.c" /* yacc.c:1646  */
+#line 1675 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 279 "862012666-862083506.y" /* yacc.c:1646  */
+#line 280 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.IdentifierBlock).identifiers = strdup((yyvsp[0].Identifier).identifier);
 		}
-#line 1682 "y.tab.c" /* yacc.c:1646  */
+#line 1683 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 282 "862012666-862083506.y" /* yacc.c:1646  */
+#line 283 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream s;
 			s << (yyvsp[-2].Identifier).identifier << " " << (yyvsp[0].IdentifierBlock).identifiers;
 			(yyval.IdentifierBlock).identifiers = strdup(s.str().c_str());
 		}
-#line 1692 "y.tab.c" /* yacc.c:1646  */
+#line 1693 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 289 "862012666-862083506.y" /* yacc.c:1646  */
+#line 290 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Identifier).identifier = (yyvsp[0].ident);
 		}
-#line 1700 "y.tab.c" /* yacc.c:1646  */
+#line 1701 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 294 "862012666-862083506.y" /* yacc.c:1646  */
+#line 295 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			//std::string temp = lookup($1.identifier);
 			string temp = symbols[(yyvsp[-2].ident)];
@@ -1711,11 +1712,11 @@ yyreduce:
 
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1715 "y.tab.c" /* yacc.c:1646  */
+#line 1716 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 304 "862012666-862083506.y" /* yacc.c:1646  */
+#line 305 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			//Lookup from symbol table
 			//std::string temp = lookup($1.identifier);
@@ -1726,11 +1727,11 @@ yyreduce:
 
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1730 "y.tab.c" /* yacc.c:1646  */
+#line 1731 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 314 "862012666-862083506.y" /* yacc.c:1646  */
+#line 315 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			//TO DO: Make sure $ entries are properly indexed
 			//Remove $0
@@ -1742,13 +1743,13 @@ yyreduce:
 			//Condition
 			s << (yyvsp[-3].Expression).IR;
 			//Jump into branch
-			s << "?:=" << label0 << ", " << (yyvsp[-3].Expression).ret_name << std::endl;
+			s << "?:= " << label0 << ", " << (yyvsp[-3].Expression).ret_name << std::endl;
 			
 			//Skip branch
 			s << ":= " << label1 << std::endl;
 
 			//Branch
-			s << ":" << label0 << std::endl;
+			s << ": " << label0 << std::endl;
 			s << (yyvsp[-1].Statement).IR;
 			
 			//Finally
@@ -1756,11 +1757,11 @@ yyreduce:
 			
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1760 "y.tab.c" /* yacc.c:1646  */
+#line 1761 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 339 "862012666-862083506.y" /* yacc.c:1646  */
+#line 340 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			std::string label0 = make_label();
 			std::string label1 = make_label();
@@ -1776,7 +1777,7 @@ yyreduce:
 			s << ":= " << label1 << std::endl;
 			
 			//Branch
-			s << ":" << label0 << std::endl;
+			s << ": " << label0 << std::endl;
 			s << (yyvsp[-3].Statement).IR;
 			
 			//Jump to finally
@@ -1791,11 +1792,11 @@ yyreduce:
 			(yyval.Statement).IR = strdup(s.str().c_str());
 			
 		}
-#line 1795 "y.tab.c" /* yacc.c:1646  */
+#line 1796 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 369 "862012666-862083506.y" /* yacc.c:1646  */
+#line 370 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			string label_body = make_label();
 			string label_condition = make_label();
@@ -1831,11 +1832,11 @@ yyreduce:
 
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1835 "y.tab.c" /* yacc.c:1646  */
+#line 1836 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 404 "862012666-862083506.y" /* yacc.c:1646  */
+#line 405 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			std::string label_body = make_label();
 			std::string label_condition = make_label();
@@ -1870,131 +1871,131 @@ yyreduce:
 			
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1874 "y.tab.c" /* yacc.c:1646  */
+#line 1875 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 438 "862012666-862083506.y" /* yacc.c:1646  */
+#line 439 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Statement).IR = strdup((yyvsp[0].Statement).IR);
 		}
-#line 1882 "y.tab.c" /* yacc.c:1646  */
+#line 1883 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 441 "862012666-862083506.y" /* yacc.c:1646  */
+#line 442 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Statement).IR = strdup((yyvsp[0].Statement).IR);
 		}
-#line 1890 "y.tab.c" /* yacc.c:1646  */
+#line 1891 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 444 "862012666-862083506.y" /* yacc.c:1646  */
+#line 445 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream s;
 			s << (yyvsp[0].Expression).IR;
 			s << "ret " << (yyvsp[0].Expression).ret_name << endl;
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1901 "y.tab.c" /* yacc.c:1646  */
+#line 1902 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 452 "862012666-862083506.y" /* yacc.c:1646  */
+#line 453 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream s;
 			s << ".< " << symbols[(yyvsp[0].ident)] << endl;
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1911 "y.tab.c" /* yacc.c:1646  */
+#line 1912 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 457 "862012666-862083506.y" /* yacc.c:1646  */
+#line 458 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream s;
 			s << ".< " << symbols[(yyvsp[-3].ident)] << ", " << (yyvsp[-1].Expression).ret_name << endl;
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1921 "y.tab.c" /* yacc.c:1646  */
+#line 1922 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 462 "862012666-862083506.y" /* yacc.c:1646  */
+#line 463 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream s;
 			s << (yyvsp[-1].Statement).IR;
 			s << ".< " << symbols[(yyvsp[0].ident)] << endl;
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1932 "y.tab.c" /* yacc.c:1646  */
+#line 1933 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 468 "862012666-862083506.y" /* yacc.c:1646  */
+#line 469 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream s;
 			s << (yyvsp[-4].Statement).IR;
 			s << ".< " << symbols[(yyvsp[-3].ident)] << ", " << (yyvsp[-1].Expression).ret_name << endl;
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1943 "y.tab.c" /* yacc.c:1646  */
+#line 1944 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 476 "862012666-862083506.y" /* yacc.c:1646  */
+#line 477 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream s;
 			s << ".> " << symbols[(yyvsp[0].ident)] << endl;
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1953 "y.tab.c" /* yacc.c:1646  */
+#line 1954 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 481 "862012666-862083506.y" /* yacc.c:1646  */
+#line 482 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream s;
 			s << ".> " << symbols[(yyvsp[-3].ident)] << ", " << (yyvsp[-1].Expression).ret_name << endl;
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1963 "y.tab.c" /* yacc.c:1646  */
+#line 1964 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 486 "862012666-862083506.y" /* yacc.c:1646  */
+#line 487 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream s;
 			s << (yyvsp[-1].Statement).IR;
 			s << ".> " << symbols[(yyvsp[0].ident)] << endl;
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1974 "y.tab.c" /* yacc.c:1646  */
+#line 1975 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 492 "862012666-862083506.y" /* yacc.c:1646  */
+#line 493 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream s;
 			s << (yyvsp[-4].Statement).IR;
 			s << ".> " << symbols[(yyvsp[-3].ident)] << ", " << (yyvsp[-1].Expression).ret_name << endl;
 			(yyval.Statement).IR = strdup(s.str().c_str());
 		}
-#line 1985 "y.tab.c" /* yacc.c:1646  */
+#line 1986 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 500 "862012666-862083506.y" /* yacc.c:1646  */
+#line 501 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Expression).IR = (yyvsp[0].Expression).IR;
 			(yyval.Expression).ret_name = strdup((yyvsp[0].Expression).ret_name);
 		}
-#line 1994 "y.tab.c" /* yacc.c:1646  */
+#line 1995 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 504 "862012666-862083506.y" /* yacc.c:1646  */
+#line 505 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream s;
 			s << (yyvsp[-2].Expression).IR;
@@ -2006,20 +2007,20 @@ yyreduce:
 			(yyval.Expression).IR = strdup(s.str().c_str());
 			(yyval.Expression).ret_name = strdup(temp.c_str());
 		}
-#line 2010 "y.tab.c" /* yacc.c:1646  */
+#line 2011 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 517 "862012666-862083506.y" /* yacc.c:1646  */
+#line 518 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Expression).IR = (yyvsp[0].Expression).IR;
 			(yyval.Expression).ret_name = strdup((yyvsp[0].Expression).ret_name);
 		}
-#line 2019 "y.tab.c" /* yacc.c:1646  */
+#line 2020 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 43:
-#line 521 "862012666-862083506.y" /* yacc.c:1646  */
+#line 522 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			std::ostringstream s;
 			s << (yyvsp[-2].Expression).IR;
@@ -2031,20 +2032,20 @@ yyreduce:
 			(yyval.Expression).IR = strdup(s.str().c_str());
 			(yyval.Expression).ret_name = strdup(temp.c_str());
 		}
-#line 2035 "y.tab.c" /* yacc.c:1646  */
+#line 2036 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 534 "862012666-862083506.y" /* yacc.c:1646  */
+#line 535 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Expression).IR = (yyvsp[0].Expression).IR;
 			(yyval.Expression).ret_name = strdup((yyvsp[0].Expression).ret_name);
 		}
-#line 2044 "y.tab.c" /* yacc.c:1646  */
+#line 2045 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 45:
-#line 538 "862012666-862083506.y" /* yacc.c:1646  */
+#line 539 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			std::ostringstream s;
 			
@@ -2056,11 +2057,11 @@ yyreduce:
 			(yyval.Expression).IR = strdup(s.str().c_str());
 			(yyval.Expression).ret_name = strdup(temp.c_str());
 	  }
-#line 2060 "y.tab.c" /* yacc.c:1646  */
+#line 2061 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 46:
-#line 551 "862012666-862083506.y" /* yacc.c:1646  */
+#line 552 "862012666-862083506.y" /* yacc.c:1646  */
     {
 		
 			std::ostringstream s;
@@ -2072,81 +2073,81 @@ yyreduce:
 			(yyval.Expression).IR = strdup(s.str().c_str());
 			(yyval.Expression).ret_name = strdup(temp.c_str());
 		}
-#line 2076 "y.tab.c" /* yacc.c:1646  */
+#line 2077 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 47:
-#line 562 "862012666-862083506.y" /* yacc.c:1646  */
+#line 563 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Expression).ret_name = strdup("true");
 		}
-#line 2084 "y.tab.c" /* yacc.c:1646  */
+#line 2085 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 48:
-#line 565 "862012666-862083506.y" /* yacc.c:1646  */
+#line 566 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Expression).ret_name = strdup("false");
 		}
-#line 2092 "y.tab.c" /* yacc.c:1646  */
+#line 2093 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 49:
-#line 568 "862012666-862083506.y" /* yacc.c:1646  */
+#line 569 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Expression).IR = strdup((yyvsp[-1].Expression).IR);
 			(yyval.Expression).ret_name = strdup((yyvsp[-1].Expression).ret_name);
 		}
-#line 2101 "y.tab.c" /* yacc.c:1646  */
+#line 2102 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 50:
-#line 575 "862012666-862083506.y" /* yacc.c:1646  */
+#line 576 "862012666-862083506.y" /* yacc.c:1646  */
     { (yyval.Operator).op = strdup("=="); }
-#line 2107 "y.tab.c" /* yacc.c:1646  */
+#line 2108 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 51:
-#line 576 "862012666-862083506.y" /* yacc.c:1646  */
+#line 577 "862012666-862083506.y" /* yacc.c:1646  */
     { (yyval.Operator).op = strdup("!="); }
-#line 2113 "y.tab.c" /* yacc.c:1646  */
+#line 2114 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 52:
-#line 577 "862012666-862083506.y" /* yacc.c:1646  */
+#line 578 "862012666-862083506.y" /* yacc.c:1646  */
     { (yyval.Operator).op = strdup("<"); }
-#line 2119 "y.tab.c" /* yacc.c:1646  */
+#line 2120 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 53:
-#line 578 "862012666-862083506.y" /* yacc.c:1646  */
+#line 579 "862012666-862083506.y" /* yacc.c:1646  */
     { (yyval.Operator).op = strdup(">"); }
-#line 2125 "y.tab.c" /* yacc.c:1646  */
+#line 2126 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 54:
-#line 579 "862012666-862083506.y" /* yacc.c:1646  */
+#line 580 "862012666-862083506.y" /* yacc.c:1646  */
     { (yyval.Operator).op = strdup("<="); }
-#line 2131 "y.tab.c" /* yacc.c:1646  */
+#line 2132 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 55:
-#line 580 "862012666-862083506.y" /* yacc.c:1646  */
+#line 581 "862012666-862083506.y" /* yacc.c:1646  */
     { (yyval.Operator).op = strdup(">="); }
-#line 2137 "y.tab.c" /* yacc.c:1646  */
+#line 2138 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 56:
-#line 583 "862012666-862083506.y" /* yacc.c:1646  */
+#line 584 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Expression).IR = strdup((yyvsp[0].Expression).IR);
 			(yyval.Expression).ret_name = strdup((yyvsp[0].Expression).ret_name);
 		}
-#line 2146 "y.tab.c" /* yacc.c:1646  */
+#line 2147 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 57:
-#line 587 "862012666-862083506.y" /* yacc.c:1646  */
+#line 588 "862012666-862083506.y" /* yacc.c:1646  */
     { 
 			std::ostringstream s;
 			s << (yyvsp[-2].Expression).IR;
@@ -2159,11 +2160,11 @@ yyreduce:
 			(yyval.Expression).IR = strdup(s.str().c_str());
 			(yyval.Expression).ret_name = strdup(temp.c_str());
 		}
-#line 2163 "y.tab.c" /* yacc.c:1646  */
+#line 2164 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 58:
-#line 599 "862012666-862083506.y" /* yacc.c:1646  */
+#line 600 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			std::ostringstream s;
 			s << (yyvsp[-2].Expression).IR;
@@ -2176,20 +2177,20 @@ yyreduce:
 			(yyval.Expression).IR = strdup(s.str().c_str());
 			(yyval.Expression).ret_name = strdup(temp.c_str());
 		}
-#line 2180 "y.tab.c" /* yacc.c:1646  */
+#line 2181 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 59:
-#line 613 "862012666-862083506.y" /* yacc.c:1646  */
+#line 614 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Expression).IR = strdup((yyvsp[0].Expression).IR);
 			(yyval.Expression).ret_name = strdup((yyvsp[0].Expression).ret_name);
 		}
-#line 2189 "y.tab.c" /* yacc.c:1646  */
+#line 2190 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 60:
-#line 617 "862012666-862083506.y" /* yacc.c:1646  */
+#line 618 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			std::ostringstream s;
 			s << (yyvsp[-2].Expression).IR;
@@ -2202,11 +2203,11 @@ yyreduce:
 			(yyval.Expression).IR = strdup(s.str().c_str());
 			(yyval.Expression).ret_name = strdup(temp.c_str());
 		}
-#line 2206 "y.tab.c" /* yacc.c:1646  */
+#line 2207 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 61:
-#line 629 "862012666-862083506.y" /* yacc.c:1646  */
+#line 630 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			std::ostringstream s;
 			s << (yyvsp[-2].Expression).IR;
@@ -2219,11 +2220,11 @@ yyreduce:
 			(yyval.Expression).IR = strdup(s.str().c_str());
 			(yyval.Expression).ret_name = strdup(temp.c_str());
 		}
-#line 2223 "y.tab.c" /* yacc.c:1646  */
+#line 2224 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 62:
-#line 641 "862012666-862083506.y" /* yacc.c:1646  */
+#line 642 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			std::ostringstream s;
 			s << (yyvsp[-2].Expression).IR;
@@ -2236,20 +2237,20 @@ yyreduce:
 			(yyval.Expression).IR = strdup(s.str().c_str());
 			(yyval.Expression).ret_name = strdup(temp.c_str());
 		}
-#line 2240 "y.tab.c" /* yacc.c:1646  */
+#line 2241 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 63:
-#line 655 "862012666-862083506.y" /* yacc.c:1646  */
+#line 656 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Expression).IR = strdup((yyvsp[0].Expression).IR);
 			(yyval.Expression).ret_name = strdup((yyvsp[0].Expression).ret_name);
 		}
-#line 2249 "y.tab.c" /* yacc.c:1646  */
+#line 2250 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 64:
-#line 659 "862012666-862083506.y" /* yacc.c:1646  */
+#line 660 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			std::string temp = make_temp();
 			
@@ -2261,11 +2262,11 @@ yyreduce:
 			(yyval.Expression).IR = strdup(s.str().c_str());
 			(yyval.Expression).ret_name = strdup(temp.c_str());
 		}
-#line 2265 "y.tab.c" /* yacc.c:1646  */
+#line 2266 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 65:
-#line 670 "862012666-862083506.y" /* yacc.c:1646  */
+#line 671 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			std::ostringstream s;
 			s << (yyvsp[-1].FunctionArgs).IR;
@@ -2283,33 +2284,33 @@ yyreduce:
 			(yyval.Expression).IR = strdup(s.str().c_str());
 			(yyval.Expression).ret_name = strdup(temp.c_str());
 		}
-#line 2287 "y.tab.c" /* yacc.c:1646  */
+#line 2288 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 66:
-#line 689 "862012666-862083506.y" /* yacc.c:1646  */
+#line 690 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Expression).IR = strdup("");
 			char str[12];
 			sprintf(str, "%d", (yyvsp[0].ival));
 			(yyval.Expression).ret_name = strdup(str);
 		}
-#line 2298 "y.tab.c" /* yacc.c:1646  */
+#line 2299 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 67:
-#line 695 "862012666-862083506.y" /* yacc.c:1646  */
+#line 696 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Expression).IR = strdup("");
 
 			string temp = symbols[(yyvsp[0].ident)];
 			(yyval.Expression).ret_name = strdup(temp.c_str());
 		}
-#line 2309 "y.tab.c" /* yacc.c:1646  */
+#line 2310 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 68:
-#line 701 "862012666-862083506.y" /* yacc.c:1646  */
+#line 702 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			string temp = make_temp();
 
@@ -2321,29 +2322,29 @@ yyreduce:
 			(yyval.Expression).IR = strdup(s.str().c_str());
 			(yyval.Expression).ret_name = strdup(temp.c_str());
 		}
-#line 2325 "y.tab.c" /* yacc.c:1646  */
+#line 2326 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 69:
-#line 712 "862012666-862083506.y" /* yacc.c:1646  */
+#line 713 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.Expression).IR = strdup((yyvsp[-1].Expression).IR);
 			(yyval.Expression).ret_name = strdup((yyvsp[-1].Expression).ret_name);
 		}
-#line 2334 "y.tab.c" /* yacc.c:1646  */
+#line 2335 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 70:
-#line 718 "862012666-862083506.y" /* yacc.c:1646  */
+#line 719 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			(yyval.FunctionArgs).IR = strdup((yyvsp[0].Expression).IR);
 			(yyval.FunctionArgs).ret_names = strdup((yyvsp[0].Expression).ret_name);
 		}
-#line 2343 "y.tab.c" /* yacc.c:1646  */
+#line 2344 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 71:
-#line 722 "862012666-862083506.y" /* yacc.c:1646  */
+#line 723 "862012666-862083506.y" /* yacc.c:1646  */
     {
 			ostringstream s;
 			s << (yyvsp[-2].Expression).IR;
@@ -2354,11 +2355,11 @@ yyreduce:
 			s2 << (yyvsp[-2].Expression).ret_name << " " << (yyvsp[0].FunctionArgs).ret_names;
 			(yyval.FunctionArgs).ret_names = strdup(s2.str().c_str());
 		}
-#line 2358 "y.tab.c" /* yacc.c:1646  */
+#line 2359 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 2362 "y.tab.c" /* yacc.c:1646  */
+#line 2363 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2586,7 +2587,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 733 "862012666-862083506.y" /* yacc.c:1906  */
+#line 734 "862012666-862083506.y" /* yacc.c:1906  */
 
 
 int main(int argc, char **argv) {

@@ -104,7 +104,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 46 "862012666-862083506.y" /* yacc.c:1909  */
+#line 47 "862012666-862083506.y" /* yacc.c:1909  */
 
   int ival;
   char* ident;
@@ -155,7 +155,7 @@ union YYSTYPE
 		char* op;
 	} Operator;
 	
-	struct {
+	struct { 
 		char* IR;
 	} Program;
 

@@ -1,0 +1,25 @@
+##  Compute the sum of two integers and output the sum. 
+##  Requires two specified integers a and b as input, assumed to be < 1000.
+
+function main;
+beginparams
+endparams
+beginlocals
+	a, b : integer;
+    result: integer;
+endlocals
+
+beginbody	## main program
+    ## read inputs
+    read a;
+    read b;
+
+    ## init
+    result := 0;
+
+    ## compute sum
+    result := a + b;
+    
+    ## print the sum 
+    write result;
+endbody

@@ -5,6 +5,7 @@
 //to do: check var exists in symbol table
 //to do: check array indexing
 //to do: check advanced programs
+//to do: check array size
 //to do: syntax errors
 //to do: re-entrant error
 
@@ -26,6 +27,7 @@ using namespace std;
 	extern int currPos;
 	
 	map<string, string> symbols;
+	map<string, int> types;
 	
 	string make_label() {
 		static unsigned count;
@@ -40,6 +42,12 @@ using namespace std;
 		s << "__temp__" << count;
 		count++;
 		return s.str();
+	}
+	void failIdentifier(string s) {
+		ostringstream e;
+		e << "Unknown identifier " << s;
+		yyerror(e.str().c_str());
+		exit(0);
 	}
 %}
 
@@ -76,11 +84,13 @@ using namespace std;
 	
 	struct {
 		char* IR;
+		char* temps;
 		char* identifiers;
 	} DeclarationBlock;
 	
 	struct {
 		char* IR;
+		char* temps;
 		char* identifiers;
 		unsigned size;
 	} Declaration;
@@ -148,18 +158,29 @@ function:
 			s << "func " << $2 << std::endl;
 			s << $5.IR;
 
+			map<string, bool> declared;
+
 			istringstream i($5.identifiers);
 			string identifier;
 			int count = 0;
 			while(i >> identifier) {
 				s << "= " << identifier << ", $" << count << endl;
 				count++;
+
+				if(declared[identifier]) {
+					ostringstream e;
+					s << "Duplicate declaration " << identifier
+				}
+				declared[identifier] = true;
+			}
+
+			i.str($8.identifiers);
+			while(i >> identifier) {
+				yyerror(identifier.c_str());
 			}
 
 			s << $8.IR;
 			s << $11.IR;
-			
-			//Free the symbols and temps
 			
 			s << "endfunc" << std::endl;
 			
@@ -168,6 +189,10 @@ function:
 		;
 declaration-block-optional:
 		{	$$.IR = strdup("");
+			$$.identifiers = strdup("");
+		}
+	  | error {
+			$$.IR = strdup("");
 			$$.identifiers = strdup("");
 		}
 	  | declaration-block {
@@ -193,6 +218,9 @@ declaration-block:
 		;
 statement-block-optional: 
 		{	$$.IR = strdup(""); }
+	  | error {
+			$$.IR = strdup("");
+			}
 	  | statement-block {
 			$$.IR = strdup($1.IR);
 		}
@@ -220,7 +248,6 @@ loop-statement-block:
 
 			$$.IR = strdup(s.str().c_str());
 		}
-
 	  | BREAK SEMICOLON {
 			ostringstream s;
 			s << "__BREAK__" << endl;
@@ -233,10 +260,7 @@ loop-statement-block:
 
 			$$.IR = strdup(s.str().c_str());
 		}
-
 		;
-
-
 declaration:
 		identifier-block COLON INTEGER {
 			ostringstream o;
@@ -245,7 +269,20 @@ declaration:
 			string identifier;
 			while(i >> identifier) {
 				string temp = make_temp();
+				
+				/*
+				string existing = symbols[identifier];
+				if(existing != "") {
+					ostringstream e;
+					e << "Identifier " << identifier
+					  << " is already bound to " << (types[existing] > 0 ? "array" : "integer");
+					yyerror(e.str().c_str());
+					exit(0);
+				}
+				*/
+
 				symbols[identifier] = temp;
+				types[temp] = 0;
 				o << ". " << temp << endl;
 				o2 << " " << temp;
 			}
@@ -261,10 +298,29 @@ declaration:
 
 			string identifier;
 			int size = $5;
+
+			if(size < 1) {
+				ostringstream e;
+				e << "Array size must be at least one: " << $5;
+				yyerror(e.str().c_str());
+			}
+
 			while(i >> identifier) {
 				string temp = make_temp();
-				symbols[identifier] = temp;
 
+				/*
+				string existing = symbols[identifier];
+				if(existing != "") {
+					ostringstream e;
+					e << "Identifier " << identifier
+					  << " is already bound to " << (types[existing] > 0 ? "array" : "integer");
+					yyerror(e.str().c_str());
+					exit(0);
+				}
+				*/
+
+				symbols[identifier] = temp;
+				types[temp] = size;
 				o << ".[] " << temp << ", " << size << endl;
 				o2 << " " << temp;
 			}
@@ -273,7 +329,6 @@ declaration:
 			$$.IR = strdup(o.str().c_str());
 			$$.identifiers = strdup(o2.str().c_str());
 		}
-
 		;
 identifier-block:
 		identifier		{
@@ -292,8 +347,16 @@ identifier:
 		;
 statement:
 		IDENT ASSIGN expression {
-			//std::string temp = lookup($1.identifier);
 			string temp = symbols[$1];
+
+			if(temp == "") {
+				failIdentifier($1);
+			}
+			
+			if(types[temp] > 0) {
+				yyerror("Destination must be an integer");
+				exit(0);
+			}
 
 			ostringstream s;
 			s << $3.IR;
@@ -301,10 +364,18 @@ statement:
 
 			$$.IR = strdup(s.str().c_str());
 		}
-	  | identifier L_SQUARE_BRACKET expression R_SQUARE_BRACKET ASSIGN expression {
+	  | IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET ASSIGN expression {
 			//Lookup from symbol table
-			//std::string temp = lookup($1.identifier);
-			string temp($1.identifier);
+			string temp = symbols[$1];
+
+			if(temp == "") {
+				failIdentifier($1);
+			}
+
+			if(types[temp] == 0) {
+				yyerror("Destination must be an array");
+				exit(0);
+			}
 
 			ostringstream s;
 			s << "[]= " << temp << ", " << $3.ret_name << ", " << $6.ret_name << std::endl;
@@ -450,49 +521,129 @@ statement:
 		;
 read-block:
 		READ IDENT		{
+			string temp = symbols[$2];
+			if(temp == "") {
+				failIdentifier($2);
+			}
+			
+			if(types[temp] > 0) {
+				yyerror("Destination must be an integer");
+				exit(0);
+			}
+
 			ostringstream s;
-			s << ".< " << symbols[$2] << endl;
+			s << ".< " << temp << endl;
 			$$.IR = strdup(s.str().c_str());
 		}
 	  | READ IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET {
+			string temp = symbols[$2];
+			if(temp == "") {
+				failIdentifier($2);
+			}
+
+			if(types[temp] == 0) {
+				yyerror("Destination must be an array");
+				exit(0);
+			}
+
 			ostringstream s;
-			s << ".< " << symbols[$2] << ", " << $4.ret_name << endl;
+			s << ".< " << temp << ", " << $4.ret_name << endl;
 			$$.IR = strdup(s.str().c_str());
 		}
 	  | read-block IDENT	{
+			string temp = symbols[$2];
+			if(temp == "") {
+				failIdentifier($2);
+			}
+			
+			if(types[temp] > 0) {
+				yyerror("Destination must be an integer");
+				exit(0);
+			}
+
 			ostringstream s;
 			s << $1.IR;
-			s << ".< " << symbols[$2] << endl;
+			s << ".< " << temp << endl;
 			$$.IR = strdup(s.str().c_str());
 		}
 	  | read-block IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET {
+			string temp = symbols[$2];
+			if(temp == "") {
+				failIdentifier($2);
+			}
+
+			if(types[temp] == 0) {
+				yyerror("Destination must be an array");
+				exit(0);
+			}
+
 			ostringstream s;
 			s << $1.IR;
-			s << ".< " << symbols[$2] << ", " << $4.ret_name << endl;
+			s << ".< " << temp << ", " << $4.ret_name << endl;
 			$$.IR = strdup(s.str().c_str());
 		}
 		;
 write-block:
 		WRITE IDENT		{
+			string temp = symbols[$2];
+			if(temp == "") {
+				failIdentifier($2);
+			}
+
+			if(types[temp] > 0) {
+				yyerror("Destination must be an integer");
+				exit(0);
+			}
+
 			ostringstream s;
-			s << ".> " << symbols[$2] << endl;
+			s << ".> " << temp << endl;
 			$$.IR = strdup(s.str().c_str());
 		}
 	  | WRITE IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET {
+			string temp = symbols[$2];
+			if(temp == "") {
+				failIdentifier($2);
+			}
+
+			if(types[temp] == 0) {
+				yyerror("Destination must be an array");
+				exit(0);
+			}
+
 			ostringstream s;
-			s << ".> " << symbols[$2] << ", " << $4.ret_name << endl;
+			s << ".> " << temp << ", " << $4.ret_name << endl;
 			$$.IR = strdup(s.str().c_str());
 		}
 	  | write-block IDENT	{
+			string temp = symbols[$2];
+			if(temp == "") {
+				failIdentifier($2);
+			}
+
+			if(types[temp] > 0) {
+				yyerror("Destination must be an integer");
+				exit(0);
+			}
+
 			ostringstream s;
 			s << $1.IR;
-			s << ".> " << symbols[$2] << endl;
+			s << ".> " << temp << endl;
 			$$.IR = strdup(s.str().c_str());
 		}
 	  | write-block IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET {
+			string temp = symbols[$2];
+			if(temp == "") {
+				failIdentifier($2);
+			}
+
+			if(types[temp] == 0) {
+				yyerror("Destination must be an array");
+				exit(0);
+			}
+
 			ostringstream s;
 			s << $1.IR;
-			s << ".> " << symbols[$2] << ", " << $4.ret_name << endl;
+			s << ".> " << temp << ", " << $4.ret_name << endl;
 			$$.IR = strdup(s.str().c_str());
 		}
 		;
@@ -696,15 +847,25 @@ term-body:
 			$$.IR = strdup("");
 
 			string temp = symbols[$1];
+
+			if(temp == "") {
+				failIdentifier($1);
+			}
+
 			$$.ret_name = strdup(temp.c_str());
 		}
 	  | IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET {
 			string temp = make_temp();
 
-			string func = symbols[$1];
+			string identifier = symbols[$1];
+			
+			if(identifier == "") {
+				failIdentifier($1);
+			}
 
 			ostringstream s;
-			s << "=[] " << temp << ", " << func << ", " << $3.ret_name << endl;
+			s << ". " << temp << endl;
+			s << "=[] " << temp << ", " << identifier << ", " << $3.ret_name << endl;
 
 			$$.IR = strdup(s.str().c_str());
 			$$.ret_name = strdup(temp.c_str());
