@@ -209,6 +209,34 @@ statement-block:
 			$$.IR = strdup(s.str().c_str());
 		}
 		;
+loop-statement-block:
+	    statement SEMICOLON {
+			$$.IR = strdup($1.IR);
+		}
+	  | statement SEMICOLON statement-block {
+			ostringstream s;
+			s << $1.IR;
+			s << $3.IR;
+
+			$$.IR = strdup(s.str().c_str());
+		}
+
+	  | BREAK SEMICOLON {
+			ostringstream s;
+			s << "__BREAK__" << endl;
+			$$.IR = strdup(s.str().c_str());
+		}
+	  | BREAK SEMICOLON statement-block {
+			ostringstream s;
+			s << "__BREAK__" << endl;
+			s << $3.IR;
+
+			$$.IR = strdup(s.str().c_str());
+		}
+
+		;
+
+
 declaration:
 		identifier-block COLON INTEGER {
 			ostringstream o;
@@ -338,30 +366,72 @@ statement:
 			$$.IR = strdup(s.str().c_str());
 			
 		}
-	  | WHILE bool-expr BEGINLOOP statement-block ENDLOOP {
-			std::string label_body = make_label();
-			std::string label_condition = make_label();
-			
+	  | WHILE bool-expr BEGINLOOP loop-statement-block ENDLOOP {
+			string label_body = make_label();
+			string label_condition = make_label();
+			string label_end = make_label();
+
 			std::ostringstream s;
-			s << ":= " << label_condition << std::endl;
-			s << ": " << label_body << std::endl; 
-			s << $4.IR << std::endl;
-			s << ": " << label_condition << std::endl;
-			s << $2.IR << std::endl;
-			s << "?:= " << label_body << $2.ret_name << std::endl;
+			//Jump to condition
+			s << ":= " << label_condition << endl;
 			
+			//Body
+			s << ": " << label_body << endl; 
+
+			//Body replace Breaks
+			string line;
+			istringstream body($4.IR);
+			while(getline(body, line)) {
+				if(line == "__BREAK__") {
+					s << ":= " << label_end << endl;
+				} else {
+					s << line << endl;
+				}
+			}
+
+			//Check condition
+			s << ": " << label_condition << endl;
+			s << $2.IR << endl;
+
+			//Jump to body
+			s << "?:= " << label_body << $2.ret_name << endl;
+
+			//End
+			s << ": " << label_end << endl;
+
 			$$.IR = strdup(s.str().c_str());
 		}
-	  | DO BEGINLOOP statement-block ENDLOOP WHILE bool-expr {
+	  | DO BEGINLOOP loop-statement-block ENDLOOP WHILE bool-expr {
 			std::string label_body = make_label();
 			std::string label_condition = make_label();
+			string label_end = make_label();
 			
 			std::ostringstream s;
+
+			//Body
 			s << ": " << label_body << std::endl; 
-			s << $3.IR << std::endl;
+			
+			//Body replace Breaks
+			string line;
+			istringstream body($3.IR);
+			while(getline(body, line)) {
+				if(line == "__BREAK__") {
+					s << ":= " << label_end << endl;
+				} else {
+					s << line << endl;
+				}
+			}
+			
+			//Condition
 			s << ": " << label_condition << std::endl;
 			s << $6.IR << std::endl;
+
+			//Jump to body
 			s << "?:= " << label_body << $6.ret_name << std::endl;
+
+			//End
+			s << ": " << label_end << endl;
+
 			
 			$$.IR = strdup(s.str().c_str());
 		}
@@ -370,8 +440,6 @@ statement:
 		}
 	  | write-block	{
 			$$.IR = strdup($1.IR);
-		}
-	  | BREAK				{
 		}
 	  | RETURN expression	{
 			ostringstream s;
