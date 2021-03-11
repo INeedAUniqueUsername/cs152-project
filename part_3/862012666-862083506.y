@@ -152,7 +152,7 @@ function:
 			string identifier;
 			int count = 0;
 			while(i >> identifier) {
-				s << "= " << identifier << " $" << count << endl;
+				s << "= " << identifier << ", $" << count << endl;
 				count++;
 			}
 
