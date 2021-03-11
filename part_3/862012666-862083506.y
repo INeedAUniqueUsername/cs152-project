@@ -105,7 +105,7 @@ using namespace std;
 %left PLUS MINUS MULT DIV
 %nonassoc UMINUS
 
-%type<Statement> program function-block function statement-block-optional statement-block statement
+%type<Statement> program function-block function statement-block-optional loop-statement-block statement-block statement
 %type<FunctionArgs> function-args
 %type<Expression> expression multiplicative-expr term term-body bool-expr relation-and-expr relation-expr relation-expr-body
 %type<Declaration> declaration
