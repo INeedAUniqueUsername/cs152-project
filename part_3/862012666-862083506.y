@@ -1,6 +1,12 @@
 %{
 
 //TO DO: FIX TEMP DECLARATIONS
+//to do: check var type matches (single vs array)
+//to do: check var exists in symbol table
+//to do: check array indexing
+//to do: check advanced programs
+//to do: syntax errors
+//to do: re-entrant error
 
 #include<stdio.h>
 #include<stdlib.h>
@@ -91,7 +97,6 @@ using namespace std;
 		char* IR;
 	} Program;
 }
-
 %error-verbose
 %start program
 %token FUNCTION IF ELSE THEN RETURN ENDIF WHILE DO BEGINLOOP ENDLOOP BREAK ARRAY OF BEGIN_PARAMS END_PARAMS BEGIN_LOCALS END_LOCALS BEGIN_BODY END_BODY INTEGER READ WRITE ASSIGN COMMA SEMICOLON COLON LTE GTE LT GT SUB ADD MULT DIV MOD EQ NEQ L_PAREN R_PAREN L_SQUARE_BRACKET R_SQUARE_BRACKET TRUE FALSE AND OR NOT
